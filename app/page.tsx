@@ -39,52 +39,16 @@ function ThemeToggle() {
   const { theme, toggle } = useTheme();
   const isDark = theme === 'dark';
   return (
-    <motion.button
+    <button
+      type="button"
       onClick={toggle}
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.93 }}
       aria-label={isDark ? '切换亮色主题' : '切换暗色主题'}
-      className="flex items-center gap-2 px-3 py-1.5 rounded-full border"
-      style={{
-        borderColor: isDark ? 'rgba(212,168,67,0.3)' : 'rgba(140,100,20,0.35)',
-        background: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(255,252,242,0.85)',
-        transition: 'background 0.35s ease, border-color 0.35s ease',
-      }}
+      className="forecast-theme-toggle"
     >
-      <div className="relative w-10 h-5 rounded-full flex-shrink-0"
-        style={{
-          background: isDark ? 'rgba(12,24,64,0.95)' : 'rgba(230,195,80,0.55)',
-          transition: 'background 0.35s ease',
-        }}>
-        <motion.div
-          animate={{ x: isDark ? 2 : 22 }}
-          transition={{ type: 'spring', stiffness: 400, damping: 28 }}
-          className="absolute top-1 w-3.5 h-3.5 rounded-full"
-          style={{
-            background: isDark
-              ? 'linear-gradient(135deg, #b8a050, #e8d090)'
-              : 'linear-gradient(135deg, #e89010, #f8d050)',
-          }}
-        />
-      </div>
-      <span className="text-[11px] font-medium tracking-wide select-none"
-        style={{
-          color: isDark ? 'rgba(212,180,100,0.85)' : 'rgba(110,72,8,0.8)',
-          transition: 'color 0.35s ease',
-        }}>
-        {isDark ? '暗色' : '亮色'}
-      </span>
-    </motion.button>
+      {isDark ? '暗色' : '亮色'}
+    </button>
   );
 }
-
-// ─── 主星数据 ────────────────────────────────────────────
-const STARS = [
-  { name: '紫微' }, { name: '天机' }, { name: '太阳' }, { name: '武曲' },
-  { name: '天同' }, { name: '廉贞' }, { name: '天府' }, { name: '太阴' },
-  { name: '贪狼' }, { name: '巨门' }, { name: '天相' }, { name: '天梁' },
-  { name: '七杀' }, { name: '破军' },
-];
 
 // ─── 功能模块 ────────────────────────────────────────────
 const FEATURES = [
@@ -201,49 +165,43 @@ const NI_TEACHINGS = [
 function useColors(theme: Theme) {
   const d = theme === 'dark';
   return {
-    bgBase:       d ? '#020810'                                : '#f5efe0',
-    // nav 用与 bgBase 完全相同的不透明色，避免半透明叠加产生色差带
-    navBg:        d ? '#020810'                                : '#f5efe0',
-    navBorder:    d ? 'rgba(255,255,255,0.05)'                : 'rgba(160,120,30,0.15)',
-    goldGrad:     d ? 'linear-gradient(160deg,#c8993a 0%,#f0d070 40%,#c8993a 70%,#f0c755 100%)'
-                    : 'linear-gradient(160deg,#6a4206 0%,#9a6a10 40%,#6a4206 70%,#885010 100%)',
-    goldSolid:    d ? '#d4a843'                               : '#8b6410',
-    goldLine:     d ? 'rgba(212,168,67,0.4)'                  : 'rgba(140,100,20,0.4)',
-    tagText:      d ? 'rgba(212,168,67,0.6)'                  : 'rgba(120,80,10,0.65)',
-    // 亮色文字用冷灰系（A 方案核心）：暖底 + 冷字 → 视觉不审美疲劳
-    textPrimary:  d ? '#e8eef6'                               : '#1a1d24',
-    textSecond:   d ? '#b8c6df'                               : '#3a3f4a',
-    textMuted:    d ? '#9db0d0'                               : '#5a6275',
-    textFaint:    d ? 'rgba(240,246,255,0.56)'                : '#9da4b3',
-    // 冷色 accent（B 方案核心）：呼应暗色 quan 蓝；用于装饰性 glow / 链接 / 高亮
-    accent:       d ? '#3a78d4'                               : '#3a5a82',
-    accentSoft:   d ? 'rgba(58,120,212,0.18)'                 : 'rgba(58,90,130,0.10)',
-    cardBg:       d ? 'rgba(255,255,255,0.05)'                : 'rgba(255,255,255,0.88)',
-    cardBorder:   d ? 'rgba(255,255,255,0.10)'                : 'rgba(200,160,60,0.25)',
-    cardShadow:   d ? '0 4px 32px rgba(0,0,0,0.5)'           : '0 4px 24px rgba(140,100,20,0.12)',
-    featureBg:    d ? 'rgba(255,255,255,0.04)'                : 'rgba(255,255,255,0.75)',
-    featureBord:  d ? 'rgba(255,255,255,0.08)'                : 'rgba(200,160,60,0.2)',
-    glowTint:     d ? 'rgba(212,168,67,0.07)'                 : 'rgba(180,140,40,0.06)',
-    // 亮色 glow 真用蓝/紫——给整体氛围加冷色点缀
-    glowBlue:     d ? 'rgba(40,80,160,0.12)'                  : 'rgba(58,90,130,0.06)',
-    glowPurple:   d ? 'rgba(120,50,180,0.08)'                 : 'rgba(96,80,140,0.04)',
-    niBg:         d ? 'rgba(255,255,255,0.04)'                : 'rgba(255,255,255,0.8)',
-    niBorder:     d ? 'rgba(212,168,67,0.2)'                  : 'rgba(180,130,40,0.25)',
-    niDivider:    d ? 'rgba(255,255,255,0.08)'                : 'rgba(180,130,40,0.12)',
-    niCardBg:     d ? 'rgba(255,255,255,0.04)'                : 'rgba(255,255,255,0.9)',
-    niCardBord:   d ? 'rgba(255,255,255,0.08)'                : 'rgba(200,160,60,0.2)',
-    niCardShadow: d ? '0 2px 20px rgba(0,0,0,0.4)'           : '0 2px 16px rgba(140,100,20,0.1)',
-    starBg:       d ? 'rgba(255,255,255,0.04)'                : 'rgba(255,255,255,0.7)',
-    starBorder:   d ? 'rgba(212,168,67,0.22)'                 : 'rgba(160,120,30,0.3)',
-    starText:     d ? 'rgba(212,168,67,0.7)'                  : 'rgba(120,80,10,0.7)',
-    ctaBg:        d ? 'linear-gradient(135deg,#b8892a,#f0d070,#b8892a)'
-                    : 'linear-gradient(135deg,#6a4206,#9a6810,#6a4206)',
-    ctaText:      d ? '#08080a'                               : '#f8f3e8',
-    footerText:   d ? 'rgba(255,255,255,0.08)'                : '#d0b878',
-    scrollLine:   d ? 'rgba(212,168,67,0.3)'                  : 'rgba(140,100,20,0.3)',
-    scrollText:   d ? 'rgba(255,255,255,0.12)'                : '#c0a870',
-    altSection:   d ? 'rgba(255,255,255,0.02)'                : 'rgba(255,255,255,0.4)',
-    quoteBg:      d ? 'rgba(212,168,67,0.04)'                 : 'rgba(255,255,255,0.9)',
+    bgBase:       d ? '#050b14' : '#eef4f7',
+    navBg:        d ? 'rgba(5,11,20,0.82)' : 'rgba(238,244,247,0.82)',
+    navBorder:    d ? 'rgba(154,202,214,0.13)' : 'rgba(34,71,91,0.13)',
+    goldGrad:     d ? 'linear-gradient(115deg,#edf7f7,#78e3ce,#aa91ef)' : 'linear-gradient(115deg,#153646,#087e78,#7257ad)',
+    goldSolid:    d ? '#78e3ce' : '#087e78',
+    goldLine:     d ? 'rgba(103,223,200,0.3)' : 'rgba(8,126,120,0.26)',
+    tagText:      d ? '#82aaaF' : '#587888',
+    textPrimary:  d ? '#edf7f7' : '#102432',
+    textSecond:   d ? '#afc2cc' : '#405e70',
+    textMuted:    d ? '#8da5b4' : '#5b7483',
+    textFaint:    d ? '#718c9d' : '#728793',
+    accent:       d ? '#78e3ce' : '#087e78',
+    accentSoft:   d ? 'rgba(103,223,200,0.09)' : 'rgba(8,126,120,0.07)',
+    cardBg:       d ? 'rgba(12,25,40,0.78)' : 'rgba(255,255,255,0.76)',
+    cardBorder:   d ? 'rgba(154,202,214,0.16)' : 'rgba(34,71,91,0.15)',
+    cardShadow:   d ? '0 20px 60px rgba(0,0,0,0.3),inset 0 1px 0 rgba(214,248,246,0.06)' : '0 18px 50px rgba(25,55,72,0.09),inset 0 1px 0 #fff',
+    featureBg:    d ? 'rgba(12,25,40,0.72)' : 'rgba(255,255,255,0.66)',
+    featureBord:  d ? 'rgba(154,202,214,0.14)' : 'rgba(34,71,91,0.13)',
+    glowTint:     d ? 'rgba(103,223,200,0.1)' : 'rgba(8,126,120,0.07)',
+    glowBlue:     d ? 'rgba(72,146,184,0.1)' : 'rgba(50,130,150,0.055)',
+    glowPurple:   d ? 'rgba(145,105,220,0.11)' : 'rgba(114,87,173,0.06)',
+    niBg:         d ? 'rgba(12,25,40,0.72)' : 'rgba(255,255,255,0.72)',
+    niBorder:     d ? 'rgba(103,223,200,0.18)' : 'rgba(8,126,120,0.17)',
+    niDivider:    d ? 'rgba(154,202,214,0.12)' : 'rgba(34,71,91,0.12)',
+    niCardBg:     d ? 'rgba(12,25,40,0.7)' : 'rgba(255,255,255,0.72)',
+    niCardBord:   d ? 'rgba(154,202,214,0.13)' : 'rgba(34,71,91,0.13)',
+    niCardShadow: d ? '0 12px 36px rgba(0,0,0,0.24)' : '0 12px 32px rgba(25,55,72,0.07)',
+    starBg:       d ? 'rgba(103,223,200,0.055)' : 'rgba(255,255,255,0.64)',
+    starBorder:   d ? 'rgba(103,223,200,0.2)' : 'rgba(8,126,120,0.19)',
+    starText:     d ? '#91c7bd' : '#39746f',
+    ctaBg:        d ? 'linear-gradient(120deg,#67dfc8,#5fb9d0,#aa91ef)' : 'linear-gradient(120deg,#087e78,#3d91a8,#7257ad)',
+    ctaText:      d ? '#071a20' : '#ffffff',
+    footerText:   d ? '#607b8c' : '#6d818d',
+    scrollLine:   d ? 'rgba(103,223,200,0.35)' : 'rgba(8,126,120,0.28)',
+    scrollText:   d ? '#607b8c' : '#728793',
+    altSection:   d ? 'rgba(100,160,180,0.025)' : 'rgba(255,255,255,0.3)',
+    quoteBg:      d ? 'rgba(103,223,200,0.04)' : 'rgba(255,255,255,0.7)',
   };
 }
 
@@ -278,7 +236,7 @@ function FeatureVisual({ index, colors: c }: { index: number; colors: ReturnType
   if (index === 0) {
     return (
       <div className="flex flex-col items-center justify-center h-full gap-5">
-        <div className="grid grid-cols-4 gap-1.5 w-72 mx-auto">
+        <div className="grid grid-cols-4 gap-1.5 w-full max-w-[18rem] mx-auto">
           {Array.from({ length: 16 }).map((_, i) => {
             const isCenter = [5, 6, 9, 10].includes(i);
             const isActive = [0, 3, 12, 15].includes(i);
@@ -439,6 +397,85 @@ function FeatureVisual({ index, colors: c }: { index: number; colors: ReturnType
   return null;
 }
 
+// ─── 原创星象仪表（纯 SVG，无外部素材）─────────────────────
+function ForecastInstrument() {
+  const branches = ['巳', '午', '未', '申', '酉', '戌', '亥', '子', '丑', '寅', '卯', '辰'];
+  const points = [[105,145],[151,102],[238,80],[333,105],[391,174],[404,274],[356,371],[245,412],[139,365],[90,276]];
+  return (
+    <div className="forecast-instrument-wrap">
+      <div className="forecast-instrument">
+        <div className="forecast-instrument-head">
+          <strong>个人星象坐标</strong>
+          <span>SYSTEM / READY</span>
+        </div>
+        <svg className="forecast-dial" viewBox="0 0 500 500" role="img" aria-label="十二宫星象仪表视觉">
+          <defs>
+            <radialGradient id="dial-core">
+              <stop offset="0%" stopColor="var(--ac)" stopOpacity="0.16" />
+              <stop offset="65%" stopColor="var(--violet)" stopOpacity="0.045" />
+              <stop offset="100%" stopColor="transparent" />
+            </radialGradient>
+            <linearGradient id="dial-line" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="var(--ac)" />
+              <stop offset="100%" stopColor="var(--violet)" />
+            </linearGradient>
+            <filter id="dial-glow" x="-100%" y="-100%" width="300%" height="300%">
+              <feGaussianBlur stdDeviation="4" result="blur" />
+              <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+            </filter>
+          </defs>
+          <circle cx="250" cy="250" r="220" fill="url(#dial-core)" />
+          <g fill="none" stroke="var(--t-border)">
+            <circle cx="250" cy="250" r="205" />
+            <circle cx="250" cy="250" r="170" />
+            <circle cx="250" cy="250" r="118" />
+            <circle cx="250" cy="250" r="78" strokeDasharray="2 7" />
+            <path d="M45 250H455M250 45V455" strokeDasharray="2 9" />
+            <path d="M105 105L395 395M395 105L105 395" strokeDasharray="2 12" opacity="0.5" />
+          </g>
+          <g className="forecast-dial-orbit" stroke="var(--ac)" fill="none">
+            {Array.from({ length: 60 }).map((_, i) => {
+              const a = (i * 6 - 90) * Math.PI / 180;
+              const major = i % 5 === 0;
+              const r1 = major ? 194 : 199;
+              const r2 = 205;
+              return <line key={i} x1={250 + Math.cos(a) * r1} y1={250 + Math.sin(a) * r1} x2={250 + Math.cos(a) * r2} y2={250 + Math.sin(a) * r2} opacity={major ? 0.65 : 0.24} strokeWidth={major ? 1.4 : 0.8} />;
+            })}
+            <path d="M250 45A205 205 0 0 1 427 147" strokeWidth="2" opacity="0.7" />
+            <circle cx="427" cy="147" r="3.5" fill="var(--ac)" filter="url(#dial-glow)" />
+          </g>
+          <g className="forecast-dial-orbit-reverse" fill="none">
+            <ellipse cx="250" cy="250" rx="166" ry="98" transform="rotate(-24 250 250)" stroke="var(--violet)" strokeOpacity="0.28" />
+            <circle cx="390" cy="181" r="4" fill="var(--violet)" filter="url(#dial-glow)" />
+            <circle cx="118" cy="319" r="2.5" fill="var(--ac)" />
+          </g>
+          <polyline points={points.map(p => p.join(',')).join(' ')} fill="rgba(var(--ac-rgb),0.035)" stroke="url(#dial-line)" strokeOpacity="0.42" strokeWidth="1" />
+          {points.map(([x,y], i) => <circle key={i} cx={x} cy={y} r={i % 3 === 0 ? 3 : 1.8} fill={i % 3 === 0 ? 'var(--ac)' : 'var(--violet)'} opacity={i % 2 === 0 ? 0.9 : 0.55} />)}
+          <g fill="var(--tx-3)" fontSize="11" fontFamily="var(--font)" textAnchor="middle">
+            {branches.map((branch, i) => {
+              const a = (i * 30 - 90) * Math.PI / 180;
+              return <text key={branch} x={250 + Math.cos(a) * 183} y={254 + Math.sin(a) * 183}>{branch}</text>;
+            })}
+          </g>
+          <g textAnchor="middle">
+            <text x="250" y="218" fill="var(--ac)" fontSize="9" letterSpacing="4" fontFamily="var(--font-mono)">ZI WEI</text>
+            <text x="250" y="272" fill="var(--tx-0)" fontSize="52" fontWeight="500" fontFamily="var(--font)">紫微</text>
+            <text x="250" y="298" fill="var(--tx-3)" fontSize="10" letterSpacing="3" fontFamily="var(--font)">十二宫 · 星曜定位</text>
+          </g>
+          <g className="forecast-dial-pulse" fill="var(--ac)">
+            <circle cx="250" cy="80" r="2" /><circle cx="151" cy="102" r="1.5" /><circle cx="404" cy="274" r="1.5" />
+          </g>
+        </svg>
+        <div className="forecast-instrument-foot">
+          <div><span>PALACES</span><strong>十二宫位</strong></div>
+          <div><span>CORE STARS</span><strong>十四主星</strong></div>
+          <div><span>ENGINE</span><strong>本地排盘</strong></div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── 主页 ─────────────────────────────────────────────────
 export default function HomePage() {
   const router = useRouter();
@@ -462,7 +499,7 @@ export default function HomePage() {
   }, [c.bgBase]);
 
   return (
-    <div style={{ background: c.bgBase, transition: 'background 0.35s ease' }} className="overflow-x-hidden">
+    <div style={{ background: c.bgBase, transition: 'background 0.35s ease' }} className="forecast-home overflow-x-hidden">
       <StarField />
 
       {/* 全局光晕 */}
@@ -475,179 +512,50 @@ export default function HomePage() {
           style={{ background: `radial-gradient(ellipse, ${c.glowPurple} 0%, transparent 70%)` }} />
       </div>
 
-      {/* ── 顶部导航 ── nav 与 hero 同色（c.bgBase），无 blur 无 border，彻底无色差带 */}
-      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 sm:px-8 py-3 sm:py-4 gap-2"
-        style={{
-          background: c.navBg,
-        }}>
-        <div className="text-[11px] sm:text-xs tracking-[0.3em] sm:tracking-[0.4em] font-medium transition-colors duration-300 flex-shrink-0"
-          style={{ color: c.goldSolid }}>
-          紫微命盘
-        </div>
-        <div className="flex items-center gap-1.5 sm:gap-3 flex-shrink-0">
+      {/* ── 顶部导航 ── */}
+      <nav className="forecast-nav">
+        <a href="/" className="forecast-brand" aria-label="紫微命盘首页">
+          <span className="forecast-brand-mark" aria-hidden="true" />
+          <span className="forecast-brand-copy">
+            <strong>紫微命盘</strong>
+            <small>FORECAST CENTER</small>
+          </span>
+        </a>
+        <span className="forecast-status">LOCAL ASTROLOGY SYSTEM</span>
+        <div className="forecast-nav-actions">
           <ThemeToggle />
-          <motion.button
-            whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
-            onClick={() => router.push('/heming')}
-            className="text-[11px] sm:text-xs px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-full transition-all duration-300"
-            style={{ border: `1px solid ${c.navBorder}`, color: c.textMuted }}>
-            合盘
-          </motion.button>
-          <motion.button
-            whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
-            onClick={() => router.push('/chart')}
-            className="text-[11px] sm:text-xs px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-full transition-all duration-300"
-            style={{ border: `1px solid ${c.goldLine}`, color: c.goldSolid }}>
-            立即起盘
-          </motion.button>
+          <button type="button" onClick={() => router.push('/heming')} className="forecast-nav-link">合盘</button>
+          <button type="button" onClick={() => router.push('/chart')} className="forecast-nav-cta">立即起盘</button>
         </div>
       </nav>
 
-      {/* ══ HERO ══════════════════════════════════════════ */}
-      <section ref={heroRef} className="relative min-h-[82svh] lg:min-h-[92vh] flex flex-col items-center justify-center px-6 z-10 pb-24 pt-10">
-        <motion.div style={{ y: heroY, opacity: heroOpacity, maxWidth: '960px' }} className="text-center w-full mx-auto mt-10">
-          {/* 标签行 */}
-          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="flex items-center justify-center gap-3 mb-8">
-            <div className="h-px w-12" style={{ background: `linear-gradient(to right, transparent, ${c.goldLine})` }} />
-            <span className="text-[11px] tracking-[0.45em] transition-colors duration-300" style={{ color: c.tagText }}>
-              紫微斗数 · 倪海厦体系
-            </span>
-            <div className="h-px w-12" style={{ background: `linear-gradient(to left, transparent, ${c.goldLine})` }} />
+      {/* ══ HERO · 星象仪表盘 ═════════════════════════════ */}
+      <section ref={heroRef} className="forecast-hero">
+        <motion.div style={{ y: heroY, opacity: heroOpacity }} className="forecast-hero-copy">
+          <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55 }} className="forecast-eyebrow">
+            紫微斗数 · 倪海厦体系
           </motion.div>
-
-          {/* 主标题 */}
-          <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
-            style={{ position: 'relative', display: 'inline-block' }}>
-            <h1
-              className={`grad-text ${theme === 'dark' ? 'grad-text-dark' : 'grad-text-light'} font-bold leading-none mb-5`}
-              style={{
-                fontSize: 'clamp(56px, 10vw, 124px)',
-                letterSpacing: '0.07em',
-              }}>
-              紫微命盘
+          <motion.div initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.75, delay: 0.08, ease: [0.22,1,0.36,1] }}>
+            <h1>
+              <span className={`grad-text ${theme === 'dark' ? 'grad-text-dark' : 'grad-text-light'}`}>紫微命盘</span>
+              <span className="forecast-hero-title-sub">以星象为坐标，读懂自己的节奏</span>
             </h1>
           </motion.div>
-
-          <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.45 }}
-            className="text-base md:text-lg tracking-[0.18em] mb-2"
-            style={{ color: c.textSecond, fontWeight: 500 }}>
-            紫微为门 · 天地人为路 · 倪海厦为师
+          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.65, delay: 0.24 }} className="forecast-hero-description">
+            输入出生年月日时，生成专属紫微斗数命盘。十四主星、四化飞星与大限流年清晰呈现，再由 AI 陪你探索命盘背后的性格与人生课题。
           </motion.p>
-          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-            transition={{ duration: 0.7, delay: 0.55 }}
-            className="text-xs md:text-sm tracking-[0.3em] mb-6"
-            style={{ color: c.textMuted, opacity: 0.85 }}>
-            AI 答疑 · 知行合一
-          </motion.p>
-          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-            transition={{ duration: 0.7, delay: 0.65 }}
-            className="text-sm max-w-xl mx-auto leading-relaxed mb-10"
-            style={{ color: c.textMuted }}>
-            输入出生年月日时，生成专属紫微斗数命盘 — 后续天纪、地纪、人纪学习模块陆续开放。
-          </motion.p>
-
-          {/* CTA */}
-          <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.85 }}
-            className="flex flex-col items-center gap-4">
-            <motion.button
-              whileHover={{ y: -2, filter: 'brightness(1.06)' }} whileTap={{ scale: 0.97 }}
-              onClick={() => router.push('/chart')}
-              className="px-12 py-4 font-semibold text-base tracking-widest rounded-full"
-              style={{ background: c.ctaBg, color: c.ctaText }}>
-              立即起盘
-            </motion.button>
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, delay: 0.36 }} className="forecast-hero-actions">
+            <button type="button" onClick={() => router.push('/chart')} className="forecast-hero-primary">立即起盘 <span>↗</span></button>
+            <button type="button" onClick={() => router.push('/heming')} className="forecast-hero-secondary">探索紫微合盘</button>
           </motion.div>
-
-          {/* 十四主星 */}
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-            transition={{ delay: 1.05, duration: 0.8 }}
-            className="mt-12 grid grid-cols-7 gap-1.5 max-w-[540px] mx-auto">
-            {STARS.map((star, i) => (
-              <motion.div key={star.name}
-                initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 1.05 + i * 0.03, duration: 0.35 }}
-                className="flex items-center justify-center px-2 py-1 rounded-full"
-                style={{ background: c.starBg, border: `1px solid ${c.starBorder}` }}>
-                <span className="text-[11px] tracking-wide" style={{ color: c.starText }}>{star.name}</span>
-              </motion.div>
-            ))}
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.7, delay: 0.5 }} className="forecast-hero-metrics">
+            <div className="forecast-hero-metric"><strong>12 宫</strong><span>完整人生坐标</span></div>
+            <div className="forecast-hero-metric"><strong>14 主星</strong><span>星曜关系可读</span></div>
+            <div className="forecast-hero-metric"><strong>本地计算</strong><span>出生信息即时排盘</span></div>
           </motion.div>
         </motion.div>
-
-        {/* 上线公告便利贴 — 桌面端绝对定位右侧 */}
-        <motion.div
-          initial={{ opacity: 0, x: 30, rotate: 0 }}
-          animate={{ opacity: 1, x: 0, rotate: -4 }}
-          transition={{ delay: 1.4, duration: 0.7, ease: [0.25, 0.1, 0.25, 1] }}
-          className="absolute hidden lg:block pointer-events-none"
-          style={{
-            right: 'clamp(2%, 6vw, 8%)',
-            top: '54%',
-            maxWidth: '240px',
-          }}
-        >
-          <div style={{
-            background: 'linear-gradient(135deg, #fff5e3 0%, #ffe1c0 100%)',
-            border: '2px dashed rgba(232,132,62,0.45)',
-            borderRadius: '16px',
-            padding: '14px 18px',
-            boxShadow: '0 8px 24px rgba(196,90,45,0.18), 0 2px 6px rgba(196,90,45,0.1)',
-            fontFamily: '"PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif',
-          }}>
-            <div style={{ fontSize: '20px', marginBottom: '6px', lineHeight: 1 }}>🎁</div>
-            <div style={{ fontSize: '13px', lineHeight: 1.7, color: '#8b3a1a', fontWeight: 500 }}>
-              <span style={{ color: '#c45a2d', fontWeight: 700, fontSize: '14px' }}>5/1 — 5/8</span>
-              <span> 限时回馈</span>
-            </div>
-            <div style={{ fontSize: '13px', lineHeight: 1.7, color: '#8b3a1a', fontWeight: 500 }}>
-              全部功能 + AI 提问
-              <strong style={{ color: '#c45a2d' }}> 全免费</strong>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* 上线公告便利贴 — 手机端正常流式显示（hero 内容下方居中） */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0, rotate: -2 }}
-          transition={{ delay: 1.4, duration: 0.7, ease: [0.25, 0.1, 0.25, 1] }}
-          className="lg:hidden mx-auto mt-8 mb-2 pointer-events-none"
-          style={{
-            maxWidth: 'min(280px, 84vw)',
-          }}
-        >
-          <div style={{
-            background: 'linear-gradient(135deg, #fff5e3 0%, #ffe1c0 100%)',
-            border: '2px dashed rgba(232,132,62,0.45)',
-            borderRadius: '14px',
-            padding: '12px 16px',
-            boxShadow: '0 6px 18px rgba(196,90,45,0.16), 0 2px 4px rgba(196,90,45,0.08)',
-            fontFamily: '"PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif',
-            textAlign: 'center',
-          }}>
-            <div style={{ fontSize: '18px', marginBottom: '4px', lineHeight: 1 }}>🎁</div>
-            <div style={{ fontSize: '12px', lineHeight: 1.7, color: '#8b3a1a', fontWeight: 500 }}>
-              <span style={{ color: '#c45a2d', fontWeight: 700, fontSize: '13px' }}>5/1 — 5/8</span>
-              <span> 限时回馈</span>
-            </div>
-            <div style={{ fontSize: '12px', lineHeight: 1.7, color: '#8b3a1a', fontWeight: 500 }}>
-              全部功能 + AI <strong style={{ color: '#c45a2d' }}>全免费</strong>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* 滚动提示（绝对定位，不影响 hero opacity 计算） */}
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-          transition={{ delay: 2, duration: 1 }}
-          className="absolute bottom-6 left-0 right-0 flex flex-col items-center gap-2 pointer-events-none">
-          <span className="text-[9px] tracking-[0.4em] uppercase" style={{ color: c.scrollText }}>探索更多</span>
-          <motion.div animate={{ y: [0, 6, 0] }} transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
-            className="w-px h-8" style={{ background: `linear-gradient(to bottom, ${c.scrollLine}, transparent)` }} />
+        <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.9, delay: 0.18, ease: [0.22,1,0.36,1] }}>
+          <ForecastInstrument />
         </motion.div>
       </section>
 
@@ -657,18 +565,18 @@ export default function HomePage() {
         <div className="absolute inset-0"
           style={{
             background: theme === 'dark'
-              ? 'linear-gradient(to bottom, #020810 0%, #020810 6%, #030a18 22%, #0d0820 40%, #0a0618 68%, #030a18 86%, #020810 100%)'
-              : 'linear-gradient(to bottom, #f5efe0 0%, #f5efe0 6%, #c08055 18%, #6a2810 32%, #1e0a02 50%, #1e0a02 70%, #6a2810 84%, #f5efe0 100%)',
+              ? 'linear-gradient(to bottom, #050b14 0%, #081524 18%, #11182f 42%, #10132a 62%, #071321 84%, #050b14 100%)'
+              : 'linear-gradient(to bottom, #eef4f7 0%, #dce9ed 10%, #263b52 30%, #172b40 52%, #263b52 74%, #dce9ed 92%, #eef4f7 100%)',
             transition: 'background 0.4s ease',
           }} />
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden">
-          <span className="font-bold" style={{ fontSize: 'clamp(220px, 38vw, 460px)', color: 'rgba(212,168,67,0.012)', lineHeight: 1, fontFamily: 'serif' }}>命</span>
+          <span className="font-bold" style={{ fontSize: 'clamp(220px, 38vw, 460px)', color: 'rgba(103,223,200,0.025)', lineHeight: 1, fontFamily: 'serif' }}>命</span>
         </div>
         <FadeIn className="relative mx-auto text-center w-full" y={20}>
           <div className="flex items-center justify-center gap-4 mb-8">
-            <div className="h-px w-16" style={{ background: 'linear-gradient(to right, transparent, rgba(212,168,67,0.45))' }} />
-            <span className="text-[10px] tracking-[0.55em] uppercase" style={{ color: 'rgba(212,168,67,0.5)' }}>命 · 运 · 观</span>
-            <div className="h-px w-16" style={{ background: 'linear-gradient(to left, transparent, rgba(212,168,67,0.45))' }} />
+            <div className="h-px w-16" style={{ background: 'linear-gradient(to right, transparent, rgba(103,223,200,0.4))' }} />
+            <span className="text-[10px] tracking-[0.55em] uppercase" style={{ color: 'rgba(103,223,200,0.58)' }}>命 · 运 · 观</span>
+            <div className="h-px w-16" style={{ background: 'linear-gradient(to left, transparent, rgba(103,223,200,0.4))' }} />
           </div>
           <div className="space-y-3" style={{ maxWidth: '840px', margin: '0 auto' }}>
             {[
@@ -686,7 +594,7 @@ export default function HomePage() {
             <motion.p
               initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.45 }}
-              className={`grad-text ${theme === 'dark' ? 'grad-text-dark' : 'grad-text-light'} font-bold`}
+              className="grad-text grad-text-dark font-bold"
               style={{ fontSize: 'clamp(24px, 3.4vw, 48px)', letterSpacing: '0.05em', lineHeight: 1.35 }}>
               最终书写属于自己的人生剧本
             </motion.p>
@@ -746,7 +654,7 @@ export default function HomePage() {
                         ? `linear-gradient(135deg, ${c.goldSolid} 0%, ${c.goldSolid}cc 100%)`
                         : (theme === 'dark' ? 'rgba(184,146,42,0.05)' : '#fdf8ee'),
                       border: ready ? 'none' : `2px dashed ${c.goldLine}`,
-                      color: ready ? '#fff' : c.textMuted,
+                      color: ready ? (theme === 'dark' ? '#071a20' : '#ffffff') : c.textMuted,
                       boxShadow: ready ? `0 4px 16px ${c.goldSolid}55` : 'none',
                     }}>
                     <span className="text-2xl">{s.icon}</span>
@@ -819,7 +727,7 @@ export default function HomePage() {
                   <FadeIn delay={0}>
                     <div className="flex items-center gap-3 mb-6">
                       <div className="h-px w-8" style={{ background: c.goldLine }} />
-                      <span className="text-[10px] tracking-[0.5em] uppercase" style={{ color: c.tagText }}>{feature.tag}</span>
+                      <span className="text-[10px] tracking-[0.22em] sm:tracking-[0.5em] uppercase" style={{ color: c.tagText }}>{feature.tag}</span>
                     </div>
                   </FadeIn>
                   <FadeIn delay={0.1}>
@@ -874,7 +782,7 @@ export default function HomePage() {
             <div className="text-center mb-10">
               <div className="flex items-center justify-center gap-3 mb-6">
                 <div className="h-px w-12" style={{ background: `linear-gradient(to right, transparent, ${c.goldLine})` }} />
-                <span className="text-[10px] tracking-[0.5em] uppercase" style={{ color: c.tagText }}>Ni Haixia · Philosophy</span>
+                <span className="text-[10px] tracking-[0.22em] sm:tracking-[0.5em] uppercase" style={{ color: c.tagText }}>Ni Haixia · Philosophy</span>
                 <div className="h-px w-12" style={{ background: `linear-gradient(to left, transparent, ${c.goldLine})` }} />
               </div>
               <h2 className={`grad-text ${theme === 'dark' ? 'grad-text-dark' : 'grad-text-light'} font-bold mb-5 tracking-tight`}
@@ -933,7 +841,7 @@ export default function HomePage() {
             <div className="text-center mb-10">
               <div className="flex items-center justify-center gap-3 mb-6">
                 <div className="h-px w-12" style={{ background: `linear-gradient(to right, transparent, ${c.goldLine})` }} />
-                <span className="text-[10px] tracking-[0.5em] uppercase" style={{ color: c.tagText }}>Master · 1953 – 2012</span>
+                <span className="text-[10px] tracking-[0.22em] sm:tracking-[0.5em] uppercase" style={{ color: c.tagText }}>Master · 1953 – 2012</span>
                 <div className="h-px w-12" style={{ background: `linear-gradient(to left, transparent, ${c.goldLine})` }} />
               </div>
               <h2 className={`grad-text ${theme === 'dark' ? 'grad-text-dark' : 'grad-text-light'} font-bold mb-6 tracking-tight`}
@@ -1037,7 +945,7 @@ export default function HomePage() {
             <FadeIn>
               <div className="flex items-center justify-center gap-3 mb-6">
                 <div className="h-px w-8" style={{ background: c.goldLine }} />
-                <span className="text-[10px] tracking-[0.5em] uppercase" style={{ color: c.tagText }}>Compatibility · Analysis</span>
+                <span className="text-[10px] tracking-[0.22em] sm:tracking-[0.5em] uppercase" style={{ color: c.tagText }}>Compatibility · Analysis</span>
                 <div className="h-px w-8" style={{ background: c.goldLine }} />
               </div>
               <h2 className={`grad-text ${theme === 'dark' ? 'grad-text-dark' : 'grad-text-light'} font-bold mb-4 tracking-tight`}
@@ -1052,7 +960,7 @@ export default function HomePage() {
                 {['感情匹配度分析', '合伙创业评估', '亲子缘分解读', '婚前相性评估'].map(item => (
                   <span key={item} style={{
                     fontSize: '12px', padding: '5px 14px', borderRadius: '20px',
-                    background: theme === 'dark' ? 'rgba(212,168,67,0.08)' : 'rgba(212,168,67,0.12)',
+                    background: 'var(--ac-bg)',
                     border: `1px solid ${c.goldLine}`,
                     color: c.goldSolid,
                   }}>

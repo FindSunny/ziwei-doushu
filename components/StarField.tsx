@@ -36,7 +36,8 @@ export default function StarField() {
       speed: Math.random() * 0.004 + 0.002,
     }));
 
-    let animId: number;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let animId = 0;
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       particles.forEach(p => {
@@ -45,15 +46,15 @@ export default function StarField() {
         if (p.alpha <= 0) { p.alpha = 0; p.alphaDir = 1; }
 
         const color = isLight
-          ? `rgba(160, 110, 20, ${p.alpha})`   // 亮色: 金色尘埃
-          : `rgba(200, 220, 255, ${p.alpha})`;  // 暗色: 蓝白星光
+          ? `rgba(45, 125, 135, ${p.alpha})`   // 亮色: 低对比青灰星尘
+          : `rgba(180, 225, 235, ${p.alpha})`;  // 暗色: 青白星光
 
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
         ctx.fillStyle = color;
         ctx.fill();
       });
-      animId = requestAnimationFrame(draw);
+      if (!reduceMotion) animId = requestAnimationFrame(draw);
     };
     draw();
 

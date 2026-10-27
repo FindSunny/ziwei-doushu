@@ -10,7 +10,7 @@ import { useTheme } from '@/components/ThemeProvider';
 
 export default function HemingPage() {
   const router = useRouter();
-  const { theme } = useTheme();
+  const { theme, toggle } = useTheme();
   const isDark = theme === 'dark';
 
   // ─── 双方命盘状态 ─────────────────────────────────────────
@@ -113,10 +113,11 @@ export default function HemingPage() {
   }, [chartA, chartB, formA, formB, generateChart]);
 
   const cardStyle = {
-    background: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.9)',
-    border: `1px solid ${isDark ? 'rgba(255,255,255,0.1)' : 'rgba(200,160,60,0.2)'}`,
+    background: 'var(--bg-card)',
+    border: '1px solid var(--bdr-med)',
     borderRadius: '16px',
     padding: '24px',
+    boxShadow: 'var(--sh-sm)',
   };
 
   const labelStyle = {
@@ -125,15 +126,9 @@ export default function HemingPage() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--bg-0)' }}>
+    <div className="heming-shell">
       {/* 顶栏 */}
-      <header style={{
-        position: 'sticky', top: 0, zIndex: 50,
-        background: isDark ? 'rgba(2,8,16,0.88)' : 'rgba(250,245,235,0.92)',
-        backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)',
-        borderBottom: '1px solid var(--bdr)',
-        display: 'flex', alignItems: 'center', padding: '0 24px', height: '52px', gap: '16px',
-      }}>
+      <header className="chart-topbar">
         <button
           onClick={() => router.push('/')}
           style={{
@@ -147,16 +142,19 @@ export default function HemingPage() {
         <div style={{ width: '1px', height: '20px', background: 'var(--bdr-med)' }} />
         <span style={{ fontSize: '12px', color: 'var(--ac)', letterSpacing: '0.2em' }}>合盘分析</span>
         <div style={{ flex: 1 }} />
-        <span style={{ fontSize: '11px', color: 'var(--tx-3)' }}>感情 · 合伙 · 亲子 · 朋友</span>
+        <span className="forecast-status">感情 · 合伙 · 亲子 · 朋友</span>
+        <button type="button" className="forecast-theme-toggle" onClick={toggle} aria-label={isDark ? '切换亮色主题' : '切换暗色主题'}>
+          {isDark ? '暗色' : '亮色'}
+        </button>
       </header>
 
       {/* 主体 */}
-      <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '32px 24px 80px' }}>
+      <div className="heming-content">
 
         {/* 标题 */}
-        <div style={{ textAlign: 'center', marginBottom: '36px' }}>
+        <div className="heming-heading">
           <div style={{ fontSize: '28px', color: 'var(--ac)', opacity: 0.15, marginBottom: '12px' }}>☯</div>
-          <h1 style={{ fontSize: '22px', fontWeight: 600, letterSpacing: '0.15em', color: 'var(--tx-0)', marginBottom: '8px' }}>
+          <h1 style={{ fontWeight: 600, color: 'var(--tx-0)', marginBottom: '8px' }}>
             紫微合盘
           </h1>
           <p style={{ fontSize: '13px', color: 'var(--tx-3)', lineHeight: 1.6 }}>
@@ -168,7 +166,7 @@ export default function HemingPage() {
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '24px' }}
           className="heming-grid">
           {/* 甲方 */}
-          <div style={cardStyle}>
+          <div className="heming-person-card" style={cardStyle}>
             <span style={labelStyle}>甲方 — A</span>
             <BirthForm
               hideSubmit
@@ -178,7 +176,7 @@ export default function HemingPage() {
           </div>
 
           {/* 乙方 */}
-          <div style={cardStyle}>
+          <div className="heming-person-card" style={cardStyle}>
             <span style={labelStyle}>乙方 — B</span>
             <BirthForm
               hideSubmit
@@ -189,7 +187,7 @@ export default function HemingPage() {
         </div>
 
         {/* ═══ 大合盘分析框（视觉中心，始终显示）════════════════ */}
-        <div ref={analysisRef} style={{
+        <div ref={analysisRef} className="heming-analysis-card" style={{
           ...cardStyle,
           minHeight: '320px',
           padding: '32px',
@@ -214,10 +212,10 @@ export default function HemingPage() {
                 onClick={() => runAnalysis()}
                 style={{
                   padding: '14px 40px', borderRadius: 'var(--r-pill)', border: 'none',
-                  background: 'linear-gradient(135deg, #9a6210, #c88020)',
-                  color: '#fff8e8', fontSize: '14px', fontWeight: 600,
+                  background: 'linear-gradient(120deg, var(--ac), #5fb9d0 62%, var(--violet))',
+                  color: isDark ? '#071a20' : '#ffffff', fontSize: '14px', fontWeight: 600,
                   letterSpacing: '0.15em', cursor: 'pointer',
-                  boxShadow: '0 4px 16px rgba(140,100,20,0.25)',
+                  boxShadow: '0 12px 30px rgba(var(--ac-rgb),0.18)',
                   transition: 'transform 0.15s',
                 }}
                 onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)'; }}
@@ -293,7 +291,7 @@ export default function HemingPage() {
             </div>
 
             {/* 输入框 + 追问按钮 */}
-            <div style={{ display: 'flex', gap: '8px' }}>
+            <div className="heming-question-row">
               <input
                 type="text"
                 value={question}

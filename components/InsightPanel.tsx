@@ -372,6 +372,14 @@ ${selectedSiHua.starName}化${selectedSiHua.siHua}落在【${palaceName}】，�
   return (
     <div className="flex flex-col h-full rounded-xl overflow-hidden card-glass">
 
+      <div className="insight-panel-head">
+        <div>
+          <span className="insight-panel-kicker">AI INTERPRETATION</span>
+          <h2>{selectedPalace ? `${selectedPalace.name} · 重点解读` : 'AI 星象解读'}</h2>
+        </div>
+        <span className="forecast-status">ASSISTANT</span>
+      </div>
+
       {/* ── Topic buttons ── */}
       <div className="flex-shrink-0 px-2 pt-2.5 pb-2" style={{ borderBottom: '1px solid var(--t-border)' }}>
         <div className="flex items-center gap-1.5">
@@ -385,8 +393,8 @@ ${selectedSiHua.starName}化${selectedSiHua.siHua}落在【${palaceName}】，�
                   onClick={() => handleTopicClick(t.key)}
                   className="py-2 text-[12px] font-medium rounded-lg transition-all duration-150"
                   style={{
-                    background: isActive ? 'rgba(212,168,67,0.12)' : 'transparent',
-                    border: `1px solid ${isActive ? 'rgba(212,168,67,0.3)' : 'var(--t-border)'}`,
+                    background: isActive ? 'var(--ac-bg)' : 'transparent',
+                    border: `1px solid ${isActive ? 'var(--ac-bdr)' : 'var(--t-border)'}`,
                     color: isActive ? 'var(--t-gold)' : 'var(--t-faint)',
                   }}
                 >
@@ -432,8 +440,8 @@ ${selectedSiHua.starName}化${selectedSiHua.siHua}落在【${palaceName}】，�
                   <div
                     className="max-w-[85%] rounded-xl px-3 py-2 text-[12px]"
                     style={{
-                      background: 'rgba(212,168,67,0.08)',
-                      border: '1px solid rgba(212,168,67,0.18)',
+                      background: 'var(--ac-bg)',
+                      border: '1px solid var(--ac-bdr)',
                       color: 'var(--t-gold)',
                     }}
                   >
@@ -472,7 +480,7 @@ ${selectedSiHua.starName}化${selectedSiHua.siHua}落在【${palaceName}】，�
             className="flex items-center gap-3 rounded-lg px-3 py-3"
             role="status"
             aria-live="polite"
-            style={{ background: 'rgba(212,168,67,0.05)', border: '1px solid var(--t-border)' }}
+            style={{ background: 'var(--ac-bg)', border: '1px solid var(--t-border)' }}
           >
             <div
               className="h-4 w-4 flex-shrink-0 animate-spin rounded-full border-2 border-t-transparent"
@@ -514,8 +522,8 @@ ${selectedSiHua.starName}化${selectedSiHua.siHua}落在【${palaceName}】，�
             disabled={loading || !input.trim()}
             className="px-3 py-2 rounded-lg text-[12px] font-medium transition-all disabled:opacity-30 disabled:cursor-not-allowed"
             style={{
-              background: 'rgba(212,168,67,0.15)',
-              border: '1px solid rgba(212,168,67,0.25)',
+              background: 'var(--ac-bg)',
+              border: '1px solid var(--ac-bdr)',
               color: 'var(--t-gold)',
             }}
           >
