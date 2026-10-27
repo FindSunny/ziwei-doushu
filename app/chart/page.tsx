@@ -3,7 +3,7 @@ import { useState } from 'react';
 import BirthForm from '@/components/BirthForm';
 import ChartBoard from '@/components/ChartBoard';
 import InsightPanel from '@/components/InsightPanel';
-import TimeNav, { type TimeView } from '@/components/TimeNav';
+import ThemeToggle from '@/components/ThemeToggle';
 import { generateChart } from '@/lib/ziwei/algorithm';
 import type { BirthInfo, ZiweiChart, Palace } from '@/lib/ziwei/types';
 
@@ -20,61 +20,60 @@ import type { BirthInfo, ZiweiChart, Palace } from '@/lib/ziwei/types';
 export default function ChartPage() {
   const [chart, setChart] = useState<ZiweiChart | null>(null);
   const [selectedPalace, setSelectedPalace] = useState<Palace | null>(null);
-  const [view, setView] = useState<TimeView>('mingpan');
-  const [liunianYear, setLiunianYear] = useState(() => new Date().getFullYear());
 
   // ── 未起盘：展示出生信息表单 ──
   if (!chart) {
     return (
-      <main style={{ maxWidth: 720, margin: '0 auto', padding: '48px 20px' }}>
-        <h1 style={{ fontSize: 28, fontWeight: 700, marginBottom: 8 }}>紫微斗数排盘</h1>
-        <p style={{ color: '#888', marginBottom: 32, fontSize: 14, lineHeight: 1.7 }}>
-          输入出生年月日时，开源排盘引擎即时生成命盘。
-          <br />
-          （本页为引擎 Demo，完整商业版界面不在开源范围；排盘内核完全开放。）
-        </p>
-        <BirthForm onSubmit={(info: BirthInfo) => setChart(generateChart(info))} />
-      </main>
+      <div className="workspace-page">
+        <header className="workspace-header">
+          <a href="/" className="workspace-header-link">← 返回首页</a>
+          <span className="workspace-header-title">紫微排盘</span>
+          <span className="workspace-header-index">01 / NATAL CHART</span>
+          <ThemeToggle />
+        </header>
+        <main className="chart-form-main">
+          <div className="chart-form-layout">
+            <section className="chart-form-intro">
+              <div className="workspace-kicker">01 — 出生信息 / BIRTH DATA</div>
+              <h1 className="workspace-title">紫微斗数<br />排盘</h1>
+              <p className="workspace-lead">输入出生年月日时，开源排盘引擎即时生成命盘。<br />以精密历法为经，以十四主星为纬，建立你的个人星象坐标。</p>
+              <div className="workspace-rule" />
+              <p className="workspace-footnote">本页为引擎 Demo，完整商业版界面不在开源范围；排盘内核完全开放。</p>
+            </section>
+            <BirthForm onSubmit={(info: BirthInfo) => setChart(generateChart(info))} />
+          </div>
+        </main>
+      </div>
     );
   }
 
   // ── 已起盘：命盘 + 解读 ──
   return (
-    <main style={{ maxWidth: 1280, margin: '0 auto', padding: '24px 16px' }}>
-      <button
-        type="button"
-        onClick={() => { setChart(null); setSelectedPalace(null); }}
-        style={{
-          marginBottom: 16, padding: '6px 14px', cursor: 'pointer',
-          border: '1px solid #ccc', borderRadius: 8, background: 'transparent',
-        }}
-      >
-        ← 重新起盘
-      </button>
+    <div className="workspace-page">
+      <header className="workspace-header">
+        <a href="/" className="workspace-header-link">← 返回首页</a>
+        <span className="workspace-header-title">紫微命盘</span>
+        <span className="workspace-header-index">01 / NATAL CHART</span>
+        <ThemeToggle />
+      </header>
+      <main className="chart-result-main">
+        <button
+          type="button"
+          className="chart-reset-button"
+          onClick={() => { setChart(null); setSelectedPalace(null); }}
+        >
+          ← 重新起盘
+        </button>
 
-      <TimeNav
-        chart={chart}
-        view={view}
-        liunianYear={liunianYear}
-        onViewChange={setView}
-        onYearChange={setLiunianYear}
-      />
-
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 380px)',
-          gap: 20, marginTop: 16, alignItems: 'start',
-        }}
-      >
-        <ChartBoard chart={chart} onPalaceSelect={setSelectedPalace} />
-        <div style={{
-          height: 'calc(100vh - 150px)', minHeight: '520px', maxHeight: '720px',
-          position: 'sticky', top: '16px',
-        }}>
-          <InsightPanel chart={chart} selectedPalace={selectedPalace} />
+        <div className="chart-result-grid">
+          <div className="chart-board-wrap">
+            <ChartBoard chart={chart} onPalaceSelect={setSelectedPalace} />
+          </div>
+          <div className="chart-ai-column">
+            <InsightPanel chart={chart} selectedPalace={selectedPalace} />
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </div>
   );
 }

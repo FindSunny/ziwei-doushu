@@ -3,6 +3,7 @@ import { useState, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import BirthForm, { type BirthFormState } from '@/components/BirthForm';
 import AiContent from '@/components/AiContent';
+import ThemeToggle from '@/components/ThemeToggle';
 import { formToBirthInfo } from '@/lib/ziwei/share';
 import { generateChart as buildChart } from '@/lib/ziwei/algorithm';
 import type { BirthInfo, ZiweiChart } from '@/lib/ziwei/types';
@@ -125,15 +126,9 @@ export default function HemingPage() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--bg-0)' }}>
+    <div className="workspace-page">
       {/* 顶栏 */}
-      <header style={{
-        position: 'sticky', top: 0, zIndex: 50,
-        background: isDark ? 'rgba(2,8,16,0.88)' : 'rgba(250,245,235,0.92)',
-        backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)',
-        borderBottom: '1px solid var(--bdr)',
-        display: 'flex', alignItems: 'center', padding: '0 24px', height: '52px', gap: '16px',
-      }}>
+      <header className="workspace-header" style={{ position: 'sticky', top: 0, zIndex: 50 }}>
         <button
           onClick={() => router.push('/')}
           style={{
@@ -147,19 +142,18 @@ export default function HemingPage() {
         <div style={{ width: '1px', height: '20px', background: 'var(--bdr-med)' }} />
         <span style={{ fontSize: '12px', color: 'var(--ac)', letterSpacing: '0.2em' }}>合盘分析</span>
         <div style={{ flex: 1 }} />
-        <span style={{ fontSize: '11px', color: 'var(--tx-3)' }}>感情 · 合伙 · 亲子 · 朋友</span>
+        <span className="workspace-header-index">感情 · 合伙 · 亲子 · 朋友</span>
+        <ThemeToggle />
       </header>
 
       {/* 主体 */}
-      <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '32px 24px 80px' }}>
+      <div className="heming-content">
 
         {/* 标题 */}
-        <div style={{ textAlign: 'center', marginBottom: '36px' }}>
+        <div className="heming-heading">
           <div style={{ fontSize: '28px', color: 'var(--ac)', opacity: 0.15, marginBottom: '12px' }}>☯</div>
-          <h1 style={{ fontSize: '22px', fontWeight: 600, letterSpacing: '0.15em', color: 'var(--tx-0)', marginBottom: '8px' }}>
-            紫微合盘
-          </h1>
-          <p style={{ fontSize: '13px', color: 'var(--tx-3)', lineHeight: 1.6 }}>
+          <h1>紫微合盘</h1>
+          <p>
             输入两个人的出生信息，AI 基于倪海厦体系分析双方命盘的缘分匹配度、感情走向与相处建议
           </p>
         </div>
@@ -168,7 +162,7 @@ export default function HemingPage() {
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '24px' }}
           className="heming-grid">
           {/* 甲方 */}
-          <div style={cardStyle}>
+          <div style={cardStyle} className="heming-panel">
             <span style={labelStyle}>甲方 — A</span>
             <BirthForm
               hideSubmit
@@ -178,7 +172,7 @@ export default function HemingPage() {
           </div>
 
           {/* 乙方 */}
-          <div style={cardStyle}>
+          <div style={cardStyle} className="heming-panel">
             <span style={labelStyle}>乙方 — B</span>
             <BirthForm
               hideSubmit
@@ -189,7 +183,7 @@ export default function HemingPage() {
         </div>
 
         {/* ═══ 大合盘分析框（视觉中心，始终显示）════════════════ */}
-        <div ref={analysisRef} style={{
+        <div ref={analysisRef} className="heming-panel" style={{
           ...cardStyle,
           minHeight: '320px',
           padding: '32px',
@@ -212,6 +206,7 @@ export default function HemingPage() {
               </div>
               <button
                 onClick={() => runAnalysis()}
+                className="heming-primary-button"
                 style={{
                   padding: '14px 40px', borderRadius: 'var(--r-pill)', border: 'none',
                   background: 'linear-gradient(135deg, #9a6210, #c88020)',

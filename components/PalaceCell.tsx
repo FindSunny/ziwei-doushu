@@ -70,24 +70,24 @@ export default function PalaceCell({
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.35, delay, ease: 'easeOut' }}
       onClick={onClick}
-      className="relative flex flex-col p-2.5 cursor-pointer transition-all duration-200 h-full"
+      className="palace-cell relative flex flex-col p-2.5 cursor-pointer transition-all duration-200 h-full"
       style={{
         minHeight: '128px',
         background: isCurrentDaXian
-          ? 'rgba(147,51,234,0.08)'
+          ? 'var(--ac-bg)'
           : isSelected
-          ? 'rgba(37,99,235,0.18)'
+          ? 'var(--ac-bg)'
           : isSanFang
-          ? 'rgba(37,99,235,0.09)'
+          ? 'var(--ac-bg)'
           : isMingGong
-          ? 'rgba(212,168,67,0.04)'
+          ? 'var(--ac-bg)'
           : 'var(--t-bg)',
         boxShadow: isCurrentDaXian
-          ? 'inset 3px 0 0 rgba(147,51,234,0.5)'
+          ? 'inset 3px 0 0 var(--ac)'
           : isSelected
-          ? 'inset 0 0 0 1.5px rgba(37,99,235,0.7)'
+          ? 'inset 0 0 0 1.5px var(--ac)'
           : isSanFang
-          ? 'inset 0 0 0 1px rgba(37,99,235,0.4)'
+          ? 'inset 0 0 0 1px var(--ac-bdr)'
           : 'none',
       }}
     >
@@ -95,16 +95,16 @@ export default function PalaceCell({
       {daXianAge && (
         <div className={clsx(
           'absolute top-1 right-1 text-[11px] font-mono tabular-nums',
-          isCurrentDaXian ? 'text-purple-400' : ''
+          isCurrentDaXian ? 'font-medium' : ''
         )}
-          style={!isCurrentDaXian ? { color: 'var(--t-faint)', opacity: 0.75 } : undefined}
+          style={isCurrentDaXian ? { color: 'var(--t-gold)' } : { color: 'var(--t-faint)', opacity: 0.75 }}
         >
           {daXianAge[0]}–{daXianAge[1]}
         </div>
       )}
 
       {/* 宫名行 */}
-      <div className="flex items-center gap-1 mb-0.5 pr-8">
+      <div className="palace-cell-name flex items-center gap-1 mb-0.5 pr-8">
         <span className={clsx('text-[12px] font-medium tracking-wide',
           isMingGong ? 'text-amber-500' : isShenGong ? 'text-sky-500' : ''
         )}
