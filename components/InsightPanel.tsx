@@ -370,7 +370,7 @@ ${selectedSiHua.starName}化${selectedSiHua.siHua}落在【${palaceName}】，�
   };
 
   return (
-    <div className="flex flex-col h-full rounded-xl overflow-hidden card-glass">
+    <div className="insight-panel flex flex-col h-full rounded-md overflow-hidden card-glass">
 
       {/* ── Topic buttons ── */}
       <div className="flex-shrink-0 px-2 pt-2.5 pb-2" style={{ borderBottom: '1px solid var(--t-border)' }}>
@@ -383,11 +383,11 @@ ${selectedSiHua.starName}化${selectedSiHua.siHua}落在【${palaceName}】，�
                   key={t.key}
                   type="button"
                   onClick={() => handleTopicClick(t.key)}
-                  className="py-2 text-[12px] font-medium rounded-lg transition-all duration-150"
+                  className="insight-topic py-2 text-[12px] font-medium rounded-sm transition-all duration-150"
                   style={{
-                    background: isActive ? 'rgba(212,168,67,0.12)' : 'transparent',
-                    border: `1px solid ${isActive ? 'rgba(212,168,67,0.3)' : 'var(--t-border)'}`,
-                    color: isActive ? 'var(--t-gold)' : 'var(--t-faint)',
+                    background: isActive ? 'var(--cinnabar-soft)' : 'transparent',
+                    border: `1px solid ${isActive ? 'var(--cinnabar-border)' : 'var(--t-border)'}`,
+                    color: isActive ? 'var(--cinnabar)' : 'var(--t-faint)',
                   }}
                 >
                   {t.label}
@@ -414,7 +414,7 @@ ${selectedSiHua.starName}化${selectedSiHua.siHua}落在【${palaceName}】，�
       {/* ── Messages ── */}
       <div
         ref={scrollRef}
-        className="flex-1 overflow-y-scroll p-4 space-y-4 min-h-0"
+        className="insight-messages flex-1 overflow-y-scroll p-4 space-y-4 min-h-0"
         style={{ scrollbarGutter: 'stable', overscrollBehavior: 'contain' }}
       >
         <AnimatePresence initial={false}>
@@ -430,11 +430,11 @@ ${selectedSiHua.starName}化${selectedSiHua.siHua}落在【${palaceName}】，�
                   className="flex justify-end"
                 >
                   <div
-                    className="max-w-[85%] rounded-xl px-3 py-2 text-[12px]"
+                    className="max-w-[85%] rounded-sm px-3 py-2 text-[12px]"
                     style={{
-                      background: 'rgba(212,168,67,0.08)',
-                      border: '1px solid rgba(212,168,67,0.18)',
-                      color: 'var(--t-gold)',
+                      background: 'var(--cinnabar-soft)',
+                      border: '1px solid var(--cinnabar-border)',
+                      color: 'var(--cinnabar)',
                     }}
                   >
                     {msg.content}
@@ -456,7 +456,7 @@ ${selectedSiHua.starName}化${selectedSiHua.siHua}落在【${palaceName}】，�
                   className="text-[10px] tracking-widest mb-2 flex items-center gap-1.5"
                   style={{ color: 'var(--t-faint)' }}
                 >
-                  <span style={{ color: 'var(--t-gold)', opacity: 0.4 }}>✦</span>
+                  <span style={{ color: 'var(--cinnabar)', opacity: 0.65 }}>◆</span>
                   命理解读
                 </div>
                 <AiContent text={msg.content} streaming={loading && isLastMsg} compact />
@@ -469,10 +469,10 @@ ${selectedSiHua.starName}化${selectedSiHua.siHua}落在【${palaceName}】，�
           <motion.div
             initial={{ opacity: 0, y: 4 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex items-center gap-3 rounded-lg px-3 py-3"
+            className="flex items-center gap-3 rounded-sm px-3 py-3"
             role="status"
             aria-live="polite"
-            style={{ background: 'rgba(212,168,67,0.05)', border: '1px solid var(--t-border)' }}
+            style={{ background: 'var(--ac-bg)', border: '1px solid var(--t-border)' }}
           >
             <div
               className="h-4 w-4 flex-shrink-0 animate-spin rounded-full border-2 border-t-transparent"
@@ -502,7 +502,7 @@ ${selectedSiHua.starName}化${selectedSiHua.siHua}落在【${palaceName}】，�
             onKeyDown={e => e.key === 'Enter' && !e.shiftKey && handleSend()}
             placeholder="继续追问，如：今年适合换工作吗？"
             disabled={loading}
-            className="flex-1 rounded-lg px-3 py-2 text-[12px] focus:outline-none transition-colors"
+            className="flex-1 min-w-0 rounded-sm px-3 py-2 text-[12px] focus:outline-none transition-colors"
             style={{
               background: 'var(--t-card)',
               border: '1px solid var(--t-border)',
@@ -512,11 +512,11 @@ ${selectedSiHua.starName}化${selectedSiHua.siHua}落在【${palaceName}】，�
           <button
             onClick={handleSend}
             disabled={loading || !input.trim()}
-            className="px-3 py-2 rounded-lg text-[12px] font-medium transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+            className="px-3 py-2 rounded-sm text-[12px] font-medium transition-all disabled:opacity-30 disabled:cursor-not-allowed"
             style={{
-              background: 'rgba(212,168,67,0.15)',
-              border: '1px solid rgba(212,168,67,0.25)',
-              color: 'var(--t-gold)',
+              background: 'var(--cinnabar-soft)',
+              border: '1px solid var(--cinnabar-border)',
+              color: 'var(--cinnabar)',
             }}
           >
             {loading ? '…' : '追问'}

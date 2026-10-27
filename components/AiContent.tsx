@@ -12,7 +12,7 @@ interface AiContentProps {
 export default function AiContent({ text, streaming, compact = false }: AiContentProps) {
   return (
     <div
-      className={compact ? 'text-[12px] leading-[1.75]' : 'text-[13px] leading-[1.75]'}
+      className={`ai-content ${compact ? 'text-[13px] leading-[1.8]' : 'text-[14px] leading-[1.85]'}`}
       style={{ color: 'var(--t-text2, var(--tx-2))' }}
     >
       <ReactMarkdown

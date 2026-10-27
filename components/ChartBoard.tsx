@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { ZiweiChart, Palace, Star } from '@/lib/ziwei/types';
-import { BRANCHES, STEMS } from '@/lib/ziwei/constants';
+import { BRANCHES } from '@/lib/ziwei/constants';
 import PalaceCell from './PalaceCell';
 import TimeNav, { type TimeView, getYearStemIndex, buildSiHuaOverlay } from './TimeNav';
 
@@ -104,24 +104,23 @@ export default function ChartBoard({ chart, onStarSelect, onPalaceSelect, onSiHu
         animate={{ opacity: 1, y: 0 }}
         className="text-center mb-3"
       >
-        <div className="text-[12px] tracking-[0.5em] uppercase mb-1" style={{ color: 'var(--t-faint)' }}>
+        <div className="text-[9px] tracking-[0.5em] uppercase mb-1" style={{ color: 'var(--t-faint)' }}>
           Zi Wei Dou Shu
         </div>
-        <h2 className="text-base tracking-[0.25em] font-medium" style={{ color: 'var(--t-gold)' }}>
+        <h2 className="text-lg tracking-[0.18em] font-medium" style={{ color: 'var(--t-text)' }}>
           {chart.birthInfo.name ? `${chart.birthInfo.name} · ` : ''}紫微斗数命盘
         </h2>
       </motion.div>
 
       {/* 4x4 命盘网格（含 SVG 叠加层） */}
       <div
-        className="grid rounded-xl overflow-hidden relative"
+        className="chart-board-grid grid overflow-hidden relative"
         style={{
-          gridTemplateColumns: 'repeat(4, 1fr)',
+          gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
           gridTemplateRows: 'repeat(4, auto)',
           gap: '1px',
           background: 'var(--t-border)',
           border: '1px solid var(--t-border)',
-          boxShadow: '0 4px 32px rgba(0,0,0,0.15)',
         }}
       >
         {ANIMATION_ORDER.map((branch, i) => {
@@ -150,30 +149,30 @@ export default function ChartBoard({ chart, onStarSelect, onPalaceSelect, onSiHu
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.5 }}
-          className="flex flex-col items-center justify-center p-4 gap-3"
+          className="chart-center-tile flex flex-col items-center justify-center p-4 gap-3"
           style={{ gridRow: '2 / 4', gridColumn: '2 / 4', background: 'var(--t-bg)' }}
         >
-          <div className="text-5xl select-none leading-none" style={{ color: 'var(--t-gold)', opacity: 0.12, filter: 'drop-shadow(0 0 12px rgba(180,120,30,0.15))' }}>
-            ☯
+          <div className="font-serif text-4xl select-none leading-none" style={{ color: 'var(--cinnabar)', opacity: 0.13 }}>
+            命
           </div>
 
           <div className="text-center space-y-1">
             <div className="text-[11px] tracking-[0.3em] font-medium" style={{ color: 'var(--t-gold)' }}>紫微斗数</div>
             <div className="text-[12px] space-y-0.5" style={{ color: 'var(--t-faint)' }}>
-              <div>命宫 <span style={{ color: 'var(--t-gold)', opacity: 0.7 }}>{BRANCHES[chart.mingGongBranch]}</span></div>
-              <div>身宫 <span className="text-sky-500/70">{BRANCHES[chart.shenGongBranch]}</span></div>
-              <div className="text-[11px]" style={{ color: 'var(--t-gold)', opacity: 0.75 }}>{chart.wuxingJuName}</div>
+              <div>命宫 <span style={{ color: 'var(--cinnabar)' }}>{BRANCHES[chart.mingGongBranch]}</span></div>
+              <div>身宫 <span style={{ color: 'var(--t-gold)' }}>{BRANCHES[chart.shenGongBranch]}</span></div>
+              <div className="text-[11px]" style={{ color: 'var(--t-gold)' }}>{chart.wuxingJuName}</div>
             </div>
           </div>
 
           {chart.currentDaXianIndex >= 0 && (() => {
             const dx = chart.daXians[chart.currentDaXianIndex];
             return (
-              <div className="border border-purple-500/30 rounded-lg px-3 py-1.5 text-center"
-                style={{ background: 'rgba(147,51,234,0.06)' }}>
-                <div className="text-[10px] text-purple-500/80 mb-0.5 tracking-wider">当前大限</div>
-                <div className="text-[14px] text-purple-400 font-medium tabular-nums">{dx.startAge}–{dx.endAge}岁</div>
-                <div className="text-[11px] text-purple-500/60">{dx.palaceName}</div>
+              <div className="rounded-sm px-3 py-1.5 text-center"
+                style={{ background: 'var(--ac-bg)', border: '1px solid var(--ac-bdr)' }}>
+                <div className="text-[10px] mb-0.5 tracking-wider" style={{ color: 'var(--t-faint)' }}>当前大限</div>
+                <div className="text-[14px] font-medium tabular-nums" style={{ color: 'var(--t-gold)' }}>{dx.startAge}–{dx.endAge}岁</div>
+                <div className="text-[11px]" style={{ color: 'var(--t-text2)' }}>{dx.palaceName}</div>
               </div>
             );
           })()}
@@ -212,9 +211,9 @@ export default function ChartBoard({ chart, onStarSelect, onPalaceSelect, onSiHu
                   const p1 = BRANCH_SVG_POS[sanFangBranches[1]]; // 对宫
                   const p2 = BRANCH_SVG_POS[sanFangBranches[2]]; // 三合1
                   const p3 = BRANCH_SVG_POS[sanFangBranches[3]]; // 三合2
-                  const dash = "6,5";
-                  const stroke = "rgba(37,99,235,0.55)";
-                  const sw = "1.5";
+                  const dash = "5,5";
+                  const stroke = "var(--cinnabar)";
+                  const sw = "1.25";
                   return (
                     <>
                       {/* 对宫直线：本宫 ↔ 对宫（穿过中心） */}
@@ -249,7 +248,8 @@ export default function ChartBoard({ chart, onStarSelect, onPalaceSelect, onSiHu
                           key={i}
                           cx={`${p[0]}%`} cy={`${p[1]}%`}
                           r="3"
-                          fill={i === 0 ? 'rgba(37,99,235,0.8)' : 'rgba(37,99,235,0.45)'}
+                          fill="var(--cinnabar)"
+                          fillOpacity={i === 0 ? 0.9 : 0.5}
                         />
                       ))}
                     </>
