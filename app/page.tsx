@@ -4,7 +4,6 @@ import { useRouter } from 'next/navigation';
 import { motion, useScroll, useTransform, useInView, AnimatePresence } from 'framer-motion';
 import StarField from '@/components/StarField';
 import { useTheme, type Theme } from '@/components/ThemeProvider';
-import AnnouncementModal from '@/components/AnnouncementModal';
 
 // ─── 滚动入场 wrapper ────────────────────────────────────
 function FadeIn({
@@ -464,9 +463,6 @@ export default function HomePage() {
 
   return (
     <div style={{ background: c.bgBase, transition: 'background 0.35s ease' }} className="overflow-x-hidden">
-      {/* 致用户公告——首次访问全屏覆盖，关闭后才进入首页 */}
-      <AnnouncementModal />
-
       <StarField />
 
       {/* 全局光晕 */}

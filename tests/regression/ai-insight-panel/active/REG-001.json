@@ -1,0 +1,14 @@
+{
+  "case_id": "REG-001",
+  "carrier_level": "C",
+  "environment": "本机 Next.js 页面 http://127.0.0.1:3000/chart，浏览器拦截 AI 请求，不访问外部模型。",
+  "input": "### 命格总览\n\n**【命格定性】**\n这是一个**测试命格**。\n\n- 优势：善于观察\n- 注意：保持耐心\n\n1. 第一条建议\n2. 第二条建议",
+  "steps": [
+    "拦截 /api/interpret，将 input 作为单个 SSE delta 返回，随后发送 [DONE]。",
+    "以合成日期 1990-01-01 08:00 起盘，不填写姓名和出生地。",
+    "观察首条命格解读的文字和元素。"
+  ],
+  "expected": "Markdown 结构转为标题、粗体和列表，界面无原始 Markdown 标记。",
+  "actual_pre_fix": "markdownTextPresent=true；rawMarkers 包含 ### 命格总览、- 优势：善于观察、- 注意：保持耐心。",
+  "post_fix": "浏览器渲染 H3「命格总览」、2 个 strong、2 个无序列表项和 2 个有序列表项；rawMarkersVisible=false。合盘页同样渲染 H3 和列表，未显示原始标记。"
+}

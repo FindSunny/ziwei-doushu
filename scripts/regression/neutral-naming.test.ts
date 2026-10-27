@@ -4,7 +4,7 @@
  *   允许：《紫微斗数全书》与白话里「文章笔墨」义的成语（如「…精通」「主掌…」「纯靠…」「落在…上」）。
  */
 import { execFileSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 
 const NAME = '\u6587\u58a8'; // 两个汉字的品牌简称
 const BANNED: RegExp[] = [
@@ -19,6 +19,7 @@ const TEXT_EXT = /\.(ts|tsx|js|mjs|cjs|json|css|md|txt|html|svg|xml|yml|yaml)$/i
 const files = execFileSync('git', ['ls-files', '-z'], { encoding: 'utf8' }).split('\0').filter((f) => f && TEXT_EXT.test(f));
 const hits: string[] = [];
 for (const f of files) {
+  if (!existsSync(f)) continue;
   if (BANNED.some((re) => re.test(f))) { hits.push(`${f}（文件名）`); continue; }
   const lines = readFileSync(f, 'utf8').split('\n');
   lines.forEach((line, i) => {

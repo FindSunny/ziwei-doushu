@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { ZiweiChart } from '@/lib/ziwei/types';
+import AiContent from './AiContent';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -44,7 +45,12 @@ export default function ChatPanel({ chart }: ChatPanelProps) {
       const res = await fetch('/api/interpret', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chart, messages: [...messages, userMsg] }),
+        body: JSON.stringify({
+          chart,
+          messages: [...messages, userMsg]
+            .filter(message => message.content.trim())
+            .map(({ role, content }) => ({ role, content })),
+        }),
       });
 
       if (res.status === 404) throw new Error('api-missing');
@@ -54,14 +60,16 @@ export default function ChatPanel({ chart }: ChatPanelProps) {
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
       let assistantText = '';
+      let buffer = '';
 
       setMessages(prev => [...prev, { role: 'assistant', content: '' }]);
 
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-        const chunk = decoder.decode(value, { stream: true });
-        const lines = chunk.split('\n');
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
         for (const line of lines) {
           if (line.startsWith('data: ')) {
             const data = line.slice(6);
@@ -133,12 +141,15 @@ export default function ChatPanel({ chart }: ChatPanelProps) {
                 {msg.role === 'assistant' && (
                   <div className="text-[10px] mb-1" style={{ color: 'var(--t-faint)' }}>命理师 ·</div>
                 )}
-                <div className="whitespace-pre-wrap text-xs leading-relaxed">
-                  {msg.content}
-                  {loading && i === messages.length - 1 && msg.role === 'assistant' && (
-                    <span className="inline-block w-1.5 h-3 ml-0.5 animate-pulse" style={{ background: 'var(--t-gold)', opacity: 0.6 }} />
-                  )}
-                </div>
+                {msg.role === 'assistant' ? (
+                  <AiContent
+                    text={msg.content}
+                    streaming={loading && i === messages.length - 1}
+                    compact
+                  />
+                ) : (
+                  <div className="whitespace-pre-wrap text-xs leading-relaxed">{msg.content}</div>
+                )}
               </div>
             </motion.div>
           ))}

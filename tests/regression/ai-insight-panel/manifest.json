@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "feature_key": "ai-insight-panel",
+  "active_cases": [
+    {
+      "id": "REG-001",
+      "state": "active",
+      "provisional_category": "unknown",
+      "final_category": "integration",
+      "carrier_level": "C",
+      "external_contract": "AI 返回的常用 Markdown 标题、粗体、无序列表和有序列表应渲染为对应界面元素，不显示标记符号。",
+      "input_fixture": "本地模拟流式响应：### 命格总览、**【命格定性】**、**测试命格**、两个无序列表项和两个有序列表项。",
+      "expected_output": "标题、粗体和列表按样式展示，正文不包含 ###、- 或 ** 标记。",
+      "actual_pre_fix_output": "浏览器正文显示 ### 命格总览、- 优势、- 注意等原始标记。",
+      "artifact_path": "tests/regression/ai-insight-panel/active/REG-001.json",
+      "native_test_adapter_path": null,
+      "reproduction_steps": "打开本地 /chart；拦截 /api/interpret 并返回用例中的模拟 SSE；使用合成出生信息起盘；检查解读区域。",
+      "replacement_links": []
+    },
+    {
+      "id": "REG-002",
+      "state": "active",
+      "provisional_category": "state",
+      "final_category": "state",
+      "carrier_level": "C",
+      "external_contract": "生成期间可切换主题并取消旧请求；已完成主题在当前命盘内缓存，切回和重复点击不重新请求；可手动重新生成当前主题。",
+      "input_fixture": "本地模拟即时完成及保持打开的 /api/interpret 流，依次执行主题生成、来回切换、重复点击、生成中切换和手动重新生成。",
+      "expected_output": "新主题正确展示且旧请求中止；缓存命中新增 0 次请求；重新生成仅新增 1 次当前主题请求。",
+      "actual_pre_fix_output": "事业请求开始后财运按钮 disabled=true；点击财运前后请求数均为 3，没有发送财运提示词。",
+      "artifact_path": "tests/regression/ai-insight-panel/active/REG-002.json",
+      "native_test_adapter_path": null,
+      "reproduction_steps": "在 /chart 将 /api/interpret 替换为 pending SSE；点击事业；待按钮进入加载状态后点击财运；比较请求数、禁用状态和最新提示词。",
+      "replacement_links": []
+    }
+  ],
+  "pending_cases": [],
+  "archived_cases": []
+}

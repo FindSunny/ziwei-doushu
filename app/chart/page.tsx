@@ -68,7 +68,12 @@ export default function ChartPage() {
         }}
       >
         <ChartBoard chart={chart} onPalaceSelect={setSelectedPalace} />
-        <InsightPanel chart={chart} selectedPalace={selectedPalace} />
+        <div style={{
+          height: 'calc(100vh - 150px)', minHeight: '520px', maxHeight: '720px',
+          position: 'sticky', top: '16px',
+        }}>
+          <InsightPanel chart={chart} selectedPalace={selectedPalace} />
+        </div>
       </div>
     </main>
   );
