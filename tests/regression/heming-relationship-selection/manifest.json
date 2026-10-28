@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "feature_key": "heming-relationship-selection",
+  "active_cases": [
+    {
+      "id": "REG-001",
+      "state": "active",
+      "provisional_category": "state",
+      "final_category": "integration",
+      "carrier_level": "C",
+      "external_contract": "发起合盘前，用户可选择感情、合伙、亲子或朋友关系，看到当前选择，并将所选关系用于本次分析。",
+      "input_fixture": "打开本机 /heming，不填写真实个人信息；尝试选择朋友关系并发起合盘。",
+      "expected_output": "四种关系均为可操作控件；选择朋友后有明确选中状态和确认文案；发起分析时使用朋友关系。",
+      "actual_pre_fix_output": "关系类型仅出现在顶部说明文字中；页面没有对应 button、radio 或其他关系控件，无法切换或确认。",
+      "artifact_path": "tests/regression/heming-relationship-selection/active/REG-001.json",
+      "native_test_adapter_path": null,
+      "reproduction_steps": "打开 http://127.0.0.1:3000/heming；检查关系文案附近的交互控件；尝试查找并选择朋友；记录发起按钮前的页面状态。",
+      "replacement_links": []
+    }
+  ],
+  "pending_cases": [],
+  "archived_cases": []
+}

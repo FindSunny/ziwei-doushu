@@ -8,6 +8,9 @@ import { generateChart as buildChart } from '@/lib/ziwei/algorithm';
 import type { BirthInfo, ZiweiChart } from '@/lib/ziwei/types';
 import { useTheme } from '@/components/ThemeProvider';
 
+const RELATIONSHIPS = ['感情', '合伙', '亲子', '朋友'] as const;
+type Relationship = typeof RELATIONSHIPS[number];
+
 export default function HemingPage() {
   const router = useRouter();
   const { theme, toggle } = useTheme();
@@ -19,6 +22,7 @@ export default function HemingPage() {
   // 双方表单状态由 BirthForm onFormSave 同步到此处，统一按钮触发起盘
   const [formA, setFormA] = useState<BirthFormState | null>(null);
   const [formB, setFormB] = useState<BirthFormState | null>(null);
+  const [relationship, setRelationship] = useState<Relationship>('感情');
 
   // ─── AI 合盘分析状态 ─────────────────────────────────────
   const [analysis, setAnalysis] = useState('');
@@ -76,7 +80,7 @@ export default function HemingPage() {
       const res = await fetch('/api/heming', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chartA: cA, chartB: cB, question: q ?? undefined }),
+        body: JSON.stringify({ chartA: cA, chartB: cB, relationship, question: q ?? undefined }),
       });
       if (res.status === 404) { setApiMissing(true); throw new Error('api-missing'); }
       if (!res.ok || !res.body) throw new Error();
@@ -110,7 +114,7 @@ export default function HemingPage() {
     } finally {
       setAnalyzing(false);
     }
-  }, [chartA, chartB, formA, formB, generateChart]);
+  }, [chartA, chartB, formA, formB, generateChart, relationship]);
 
   const cardStyle = {
     background: 'var(--bg-card)',
@@ -205,9 +209,41 @@ export default function HemingPage() {
           {!analysis && !analyzing && (
             <div style={{ textAlign: 'center', padding: '32px 0' }}>
               <div style={{ fontSize: '13px', color: 'var(--tx-3)', marginBottom: '24px', lineHeight: 1.7 }}>
-                填好双方出生信息后，点击下方按钮<br />
-                AI 将基于倪海厦体系深度分析两人缘分匹配度
+                填好双方出生信息并确认关系后，点击下方按钮<br />
+                AI 将基于倪海厦体系分析双方命盘的互动模式
               </div>
+              <fieldset style={{ border: 'none', padding: 0, margin: '0 auto 20px', maxWidth: '460px' }}>
+                <legend style={{ margin: '0 auto 12px', padding: '0 4px', fontSize: '12px', color: 'var(--tx-2)' }}>
+                  选择双方关系
+                </legend>
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                  {RELATIONSHIPS.map(item => (
+                    <label
+                      key={item}
+                      style={{
+                        display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 16px',
+                        borderRadius: 'var(--r-pill)', cursor: 'pointer', fontSize: '13px',
+                        border: `1px solid ${relationship === item ? 'var(--ac)' : 'var(--bdr-med)'}`,
+                        background: relationship === item ? 'var(--ac-bg)' : 'transparent',
+                        color: relationship === item ? 'var(--ac)' : 'var(--tx-2)',
+                      }}
+                    >
+                      <input
+                        type="radio"
+                        name="heming-relationship"
+                        value={item}
+                        checked={relationship === item}
+                        onChange={() => setRelationship(item)}
+                        style={{ margin: 0, accentColor: 'var(--ac)' }}
+                      />
+                      {item}
+                    </label>
+                  ))}
+                </div>
+                <div aria-live="polite" style={{ marginTop: '12px', fontSize: '12px', color: 'var(--tx-3)' }}>
+                  当前关系：<strong style={{ color: 'var(--ac)' }}>{relationship}</strong>
+                </div>
+              </fieldset>
               <button
                 onClick={() => runAnalysis()}
                 style={{
@@ -221,7 +257,7 @@ export default function HemingPage() {
                 onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)'; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; }}
               >
-                开始合盘分析
+                以{relationship}关系开始合盘
               </button>
               {formError && (
                 <div style={{ marginTop: '20px', fontSize: '13px', color: '#dc2626' }}>
