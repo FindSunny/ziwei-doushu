@@ -42,6 +42,7 @@
 | 二·新 | [13 维解读数据集 v4.0](#二新13-维解读数据集-v402026-10-15) | 2026-10-15 新版断语，67.5 万命盘，按年份下载 |
 | 二 | [51.8 万命盘样本数据集](#二518-万命盘样本数据集) | 规格、下载、用途、许可 |
 | 三 | [快速开始](#三快速开始) | 克隆到跑起来 |
+| 三·部署 | [Linux 服务器部署](./docs/deploy-tencent-cloud.md) | Caddy、systemd、防火墙与更新 |
 | 四 | [排盘引擎](#四排盘引擎) | 能做到什么、文件怎么分、古籍数据 |
 | 五 | [倪师《天纪·紫微斗数》原话](#五倪师天纪紫微斗数原话) | 14 讲 + 2 段补充、1848 条，一图看全，每条可回放 |
 | 六 | [界面是一份 Demo](#六界面是一份-demo) | 不是线上那套，差距写明 |
@@ -289,7 +290,31 @@ npm test            # 排盘引擎回归（768 盘 × 紫微铁律、夏令时�
 
 每次 push 与 PR 都会在 GitHub Actions 上跑同一套（见 [`.github/workflows/ci.yml`](./.github/workflows/ci.yml)）。
 
-> **注意：开源版不含后端 API 路由。**排盘、命盘展示、合盘起盘都在浏览器里用本仓库的引擎完成，**不需要任何 API Key**。AI 解读（`/api/interpret`）和合盘 AI 分析（`/api/heming`）需要你自己实现接口；没实现之前，这两处会直接提示「开源版不含该接口」，配置 API Key 也不会变成可用（#30 就是这个原因）。
+> **关于 AI 接口。**排盘、命盘展示和合盘起盘都在浏览器里用本仓库的引擎完成，**不需要任何 API Key**。AI 解读（`/api/interpret`）与合盘 AI 分析（`/api/heming`）由服务端读取 `DEEPSEEK_*` 环境变量后请求 DeepSeek；未配置密钥或接口不可用时，对应区域会显示错误提示。密钥只能保存在服务端 `.env.local`，不得暴露到客户端。服务端默认每日最多发起 500 次 AI 请求，超额时不会调用模型并展示 `AI_QUOTA_CONTACT`；可通过 `npm run ai-quota -- status|reset|add 100` 管理，部署细节见[服务器部署指南](./docs/deploy-tencent-cloud.md)。
+
+### AI 每日额度
+
+AI 请求由服务端统一计数，`/api/interpret` 与 `/api/heming` 共用每日额度，默认 **500 次**，北京时间 00:00 重置。额度耗尽后接口返回 `429` 且不会请求 DeepSeek，页面展示 `AI_QUOTA_CONTACT` 联系方式；上游连接失败会自动退还当次额度。
+
+```env
+AI_QUOTA_DAILY_LIMIT=500
+AI_QUOTA_CONTACT=你的联系方式
+AI_QUOTA_STORE=/var/lib/ziwei-doupan/ai-quota.json
+```
+
+管理员可在服务器应用目录查看、重置或临时增加当日额度：
+
+```bash
+npm run ai-quota -- status
+npm run ai-quota -- reset
+npm run ai-quota -- add 100
+```
+
+额度记录不可写或损坏时接口失败关闭，不会在未计数的情况下调用模型。该实现适用于单机单进程；多实例部署应改用 Redis 或数据库共享计数。
+
+### Linux 服务器部署
+
+需要部署到云服务器时，参见[腾讯云轻量应用服务器部署指南](./docs/deploy-tencent-cloud.md)。文档覆盖 systemd、Caddy 反向代理、云防火墙、密钥配置、更新流程、常见故障和多服务扩展方式，示例中的地址与凭证均为占位符。
 
 ---
 

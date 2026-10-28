@@ -1,3 +1,11 @@
+import {
+  consumeAiQuota,
+  releaseAiQuota,
+  type AiQuotaReservation,
+  type AiQuotaStatus,
+  type ConsumeAiQuotaResult,
+} from './ai-quota';
+
 export interface AIChatMessage {
   role: 'user' | 'assistant';
   content: string;
@@ -16,6 +24,32 @@ export function isChartPayload(value: unknown): boolean {
     && Array.isArray(chart.palaces) && chart.palaces.length === 12;
 }
 
+function quotaExceededResponse(quota: AiQuotaStatus): Response {
+  const retryAfter = Math.max(1, Math.ceil((new Date(quota.resetAt).getTime() - Date.now()) / 1000));
+  return Response.json({
+    code: 'AI_QUOTA_EXHAUSTED',
+    error: '今日 AI 解读额度已用完',
+    message: '今日 AI 解读额度已用完',
+    contact: quota.contact,
+    limit: quota.limit,
+    resetAt: quota.resetAt,
+  }, {
+    status: 429,
+    headers: {
+      'Cache-Control': 'no-store',
+      'Retry-After': String(retryAfter),
+    },
+  });
+}
+
+async function refundQuota(reservation: AiQuotaReservation): Promise<void> {
+  try {
+    await releaseAiQuota(reservation);
+  } catch (error) {
+    console.error('AI 额度退还失败:', error);
+  }
+}
+
 export async function createDeepSeekResponse({
   system,
   messages,
@@ -25,6 +59,18 @@ export async function createDeepSeekResponse({
   if (!apiKey || apiKey === 'your-deepseek-api-key') {
     return Response.json({ error: '请先在 .env.local 中配置 DEEPSEEK_API_KEY' }, { status: 503 });
   }
+
+  let quota: ConsumeAiQuotaResult;
+  try {
+    quota = await consumeAiQuota();
+  } catch (error) {
+    console.error('AI 额度检查失败:', error);
+    return Response.json({
+      code: 'AI_QUOTA_UNAVAILABLE',
+      error: 'AI 额度服务暂不可用，请稍后重试',
+    }, { status: 503, headers: { 'Cache-Control': 'no-store' } });
+  }
+  if (!quota.allowed) return quotaExceededResponse(quota.quota);
 
   const baseURL = (process.env.DEEPSEEK_BASE_URL || 'https://api.deepseek.com').replace(/\/+$/, '');
   let upstream: Response;
@@ -46,16 +92,19 @@ export async function createDeepSeekResponse({
       signal,
     });
   } catch (error) {
+    await refundQuota(quota.reservation);
     console.error('DeepSeek 连接失败:', error);
     return Response.json({ error: '无法连接 DeepSeek，请检查网络后重试' }, { status: 502 });
   }
 
   if (!upstream.ok) {
+    await refundQuota(quota.reservation);
     console.error(`DeepSeek 返回 HTTP ${upstream.status}`);
     await upstream.body?.cancel();
     return Response.json({ error: 'DeepSeek 请求失败，请检查 API Key、账户余额或稍后重试' }, { status: 502 });
   }
   if (!upstream.body) {
+    await refundQuota(quota.reservation);
     return Response.json({ error: 'DeepSeek 未返回响应流' }, { status: 502 });
   }
 

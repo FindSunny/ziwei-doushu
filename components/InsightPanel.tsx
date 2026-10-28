@@ -2,7 +2,9 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { ZiweiChart, Palace } from '@/lib/ziwei/types';
+import { parseAiQuotaExceeded, type AiQuotaExceededInfo } from '@/lib/ai-quota-error';
 import AiContent from './AiContent';
+import AiQuotaNotice from './AiQuotaNotice';
 import type { TimeView } from './TimeNav';
 
 interface Message {
@@ -149,6 +151,7 @@ export default function InsightPanel({ chart, selectedPalace, selectedSiHua }: I
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [quota, setQuota] = useState<AiQuotaExceededInfo | null>(null);
   const [activeTopic, setActiveTopic] = useState<string>('overview');
   const messagesRef = useRef<Message[]>([]); // always-current copy for closures
   const activeTopicRef = useRef('overview');
@@ -272,6 +275,17 @@ ${selectedSiHua.starName}化${selectedSiHua.siHua}落在【${palaceName}】，�
         body: JSON.stringify({ chart, messages: apiMessages }),
         signal,
       });
+      if (res.status === 429) {
+        const payload = await res.json().catch(() => null);
+        const info = parseAiQuotaExceeded(payload);
+        if (info) {
+          if (isCurrentRequest()) {
+            setQuota(info);
+            updateMessages(() => topicCacheRef.current[topicKey] ?? []);
+          }
+          return;
+        }
+      }
       if (res.status === 404) throw new Error('api-missing');
       if (!res.ok) throw new Error('请求失败');
       if (!res.body) throw new Error('无响应流');
@@ -328,6 +342,7 @@ ${selectedSiHua.starName}化${selectedSiHua.siHua}落在【${palaceName}】，�
     abortRef.current = controller;
     loadingRef.current = true;
     setLoading(true);
+    setQuota(null);
 
     const userMsg: Message = { role: 'user', content: text, hidden };
     // Capture current messages synchronously via ref (avoids stale closure)
@@ -425,6 +440,7 @@ ${selectedSiHua.starName}化${selectedSiHua.siHua}落在【${palaceName}】，�
         className="flex-1 overflow-y-scroll p-4 space-y-4 min-h-0"
         style={{ scrollbarGutter: 'stable', overscrollBehavior: 'contain' }}
       >
+        {quota && <AiQuotaNotice info={quota} />}
         <AnimatePresence initial={false}>
           {messages.map((msg, i) => {
             if (msg.role === 'user' && msg.hidden) return null;

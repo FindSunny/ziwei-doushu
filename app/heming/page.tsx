@@ -3,6 +3,8 @@ import { useState, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import BirthForm, { type BirthFormState } from '@/components/BirthForm';
 import AiContent from '@/components/AiContent';
+import AiQuotaNotice from '@/components/AiQuotaNotice';
+import { parseAiQuotaExceeded, type AiQuotaExceededInfo } from '@/lib/ai-quota-error';
 import { formToBirthInfo } from '@/lib/ziwei/share';
 import { generateChart as buildChart } from '@/lib/ziwei/algorithm';
 import type { BirthInfo, ZiweiChart } from '@/lib/ziwei/types';
@@ -29,6 +31,7 @@ export default function HemingPage() {
   const [analyzing, setAnalyzing] = useState(false);
   const [question, setQuestion] = useState('');
   const [analysisError, setAnalysisError] = useState(false);
+  const [quota, setQuota] = useState<AiQuotaExceededInfo | null>(null);
   // 开源版不含 /api/heming：接口 404 时单独说明，而不是让用户反复重试
   const [apiMissing, setApiMissing] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
@@ -58,6 +61,7 @@ export default function HemingPage() {
     setAnalyzing(true);
     setAnalysis('');
     setAnalysisError(false);
+    setQuota(null);
 
     try {
       // 并行起两张盘（如果还没起）
@@ -82,6 +86,14 @@ export default function HemingPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ chartA: cA, chartB: cB, relationship, question: q ?? undefined }),
       });
+      if (res.status === 429) {
+        const payload = await res.json().catch(() => null);
+        const info = parseAiQuotaExceeded(payload);
+        if (info) {
+          setQuota(info);
+          return;
+        }
+      }
       if (res.status === 404) { setApiMissing(true); throw new Error('api-missing'); }
       if (!res.ok || !res.body) throw new Error();
 
@@ -205,8 +217,10 @@ export default function HemingPage() {
             <span style={{ fontSize: '11px', letterSpacing: '0.3em', color: 'var(--tx-3)' }}>合盘分析 · HEMING</span>
           </div>
 
+          {quota && <div style={{ marginBottom: '16px' }}><AiQuotaNotice info={quota} /></div>}
+
           {/* 状态分支 */}
-          {!analysis && !analyzing && (
+          {!analysis && !analyzing && !quota && (
             <div style={{ textAlign: 'center', padding: '32px 0' }}>
               <div style={{ fontSize: '13px', color: 'var(--tx-3)', marginBottom: '24px', lineHeight: 1.7 }}>
                 填好双方出生信息并确认关系后，点击下方按钮<br />
