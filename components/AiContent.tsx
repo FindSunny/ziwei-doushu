@@ -7,12 +7,17 @@ interface AiContentProps {
   text: string;
   streaming?: boolean;
   compact?: boolean;
+  variant?: 'mystic';
 }
 
-export default function AiContent({ text, streaming, compact = false }: AiContentProps) {
+export default function AiContent({ text, streaming, compact = false, variant }: AiContentProps) {
+  const sizeClass = variant === 'mystic'
+    ? (compact ? 'text-[13px] leading-[1.8]' : 'text-[14px] leading-[1.8]')
+    : (compact ? 'text-[12px] leading-[1.75]' : 'text-[13px] leading-[1.75]');
+
   return (
     <div
-      className={compact ? 'text-[12px] leading-[1.75]' : 'text-[13px] leading-[1.75]'}
+      className={sizeClass}
       style={{ color: 'var(--t-text2, var(--tx-2))' }}
     >
       <ReactMarkdown

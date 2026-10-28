@@ -23,6 +23,7 @@ interface InsightPanelProps {
   chart: ZiweiChart;
   selectedPalace?: Palace | null;
   selectedSiHua?: SelectedSiHua | null;
+  variant?: 'mystic';
 }
 
 const TOPICS = [
@@ -147,7 +148,8 @@ const PALACE_ROLES: Record<string, string> = {
   '父母宫': '父母关系、文书契约',
 };
 
-export default function InsightPanel({ chart, selectedPalace, selectedSiHua }: InsightPanelProps) {
+export default function InsightPanel({ chart, selectedPalace, selectedSiHua, variant }: InsightPanelProps) {
+  const isMystic = variant === 'mystic';
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -389,10 +391,10 @@ ${selectedSiHua.starName}化${selectedSiHua.siHua}落在【${palaceName}】，�
 
       <div className="insight-panel-head">
         <div>
-          <span className="insight-panel-kicker">AI INTERPRETATION</span>
-          <h2>{selectedPalace ? `${selectedPalace.name} · 重点解读` : 'AI 星象解读'}</h2>
+          <span className="insight-panel-kicker">{isMystic ? 'TIAN JI · ORACLE NOTES' : 'AI INTERPRETATION'}</span>
+          <h2>{selectedPalace ? `${selectedPalace.name} · ${isMystic ? '宫位玄机' : '重点解读'}` : isMystic ? '玄机批注' : 'AI 星象解读'}</h2>
         </div>
-        <span className="forecast-status">ASSISTANT</span>
+        <span className="forecast-status">{isMystic ? '星使' : 'ASSISTANT'}</span>
       </div>
 
       {/* ── Topic buttons ── */}
@@ -481,9 +483,9 @@ ${selectedSiHua.starName}化${selectedSiHua.siHua}落在【${palaceName}】，�
                   style={{ color: 'var(--t-faint)' }}
                 >
                   <span style={{ color: 'var(--t-gold)', opacity: 0.4 }}>✦</span>
-                  命理解读
+                  {isMystic ? '星曜批注' : '命理解读'}
                 </div>
-                <AiContent text={msg.content} streaming={loading && isLastMsg} compact />
+                <AiContent text={msg.content} streaming={loading && isLastMsg} compact variant={variant} />
               </motion.div>
             );
           })}
@@ -524,7 +526,7 @@ ${selectedSiHua.starName}化${selectedSiHua.siHua}落在【${palaceName}】，�
             value={input}
             onChange={e => setInput(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && !e.shiftKey && handleSend()}
-            placeholder="继续追问，如：今年适合换工作吗？"
+            placeholder={isMystic ? '继续追问，如：今年气运如何？' : '继续追问，如：今年适合换工作吗？'}
             disabled={loading}
             className="flex-1 rounded-lg px-3 py-2 text-[12px] focus:outline-none transition-colors"
             style={{

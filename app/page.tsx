@@ -3,6 +3,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, useScroll, useTransform, useInView, AnimatePresence } from 'framer-motion';
 import StarField from '@/components/StarField';
+import StyleSwitch from '@/components/StyleSwitch';
 import { useTheme, type Theme } from '@/components/ThemeProvider';
 
 // ─── 滚动入场 wrapper ────────────────────────────────────
@@ -523,6 +524,7 @@ export default function HomePage() {
         </a>
         <span className="forecast-status">LOCAL ASTROLOGY SYSTEM</span>
         <div className="forecast-nav-actions">
+          <StyleSwitch current="classic" />
           <ThemeToggle />
           <button type="button" onClick={() => router.push('/heming')} className="forecast-nav-link">合盘</button>
           <button type="button" onClick={() => router.push('/chart')} className="forecast-nav-cta">立即起盘</button>

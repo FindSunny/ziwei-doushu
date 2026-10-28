@@ -404,6 +404,7 @@ export default function BirthForm({ onSubmit, loading, initialData, onFormSave, 
               <motion.button
                 key={g}
                 type="button"
+                className={`birth-gender-option${active ? ' is-active' : ''}`}
                 onClick={() => setForm({ ...form, gender: g })}
                 whileTap={{ scale: 0.97 }}
                 style={{

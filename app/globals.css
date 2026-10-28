@@ -550,6 +550,40 @@ main, section, header, nav, div { min-width: 0; }
 }
 .forecast-theme-toggle:hover { border-color: var(--ac-bdr); color: var(--ac); }
 
+.style-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--bdr-med);
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  white-space: nowrap;
+}
+.style-switch button {
+  min-height: 26px;
+  padding: 4px 9px;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--tx-3);
+  cursor: pointer;
+  font-size: 11px;
+  line-height: 1;
+  transition: color 0.18s ease, background 0.18s ease;
+}
+.style-switch button:hover { color: var(--ac); }
+.style-switch button.is-active {
+  background: var(--ac-bg);
+  color: var(--ac);
+  box-shadow: inset 0 0 0 1px var(--ac-bdr);
+}
+@media (max-width: 640px) {
+  .style-switch { padding: 2px; }
+  .style-switch button { min-height: 26px; padding: 4px 8px; font-size: 10.5px; }
+  .style-switch button.is-active { display: none; }
+}
+
 /* ─── 首页 · 星象仪表 Hero ─────────────────────────────── */
 .forecast-home { position: relative; isolation: isolate; }
 .forecast-home::before {
@@ -866,15 +900,3 @@ main, section, header, nav, div { min-width: 0; }
   }
   .forecast-dial-orbit, .forecast-dial-orbit-reverse, .forecast-dial-pulse { animation: none !important; }
 }
-
-/* ─── 打印样式 ───────────────────────────────────────────── */
-@media print {
-  .no-print { display: none !important; }
-  body { background: white; color: #1a1a18; }
-  @page { margin: 1.2cm; size: A4 landscape; }
-}
-
-/* 原生下拉框（年 / 月 / 日 / 时辰 / 省市）：深色主题下选项列表用实色底。
-   select 本身是半透明底 + 浅色字，Windows 上原生下拉列表是白底，浅灰字配白底看不清（#14） */
-[data-theme="dark"] select { color-scheme: dark; }
-[data-theme="dark"] select option { background-color: var(--bg-2); color: var(--tx-1); }

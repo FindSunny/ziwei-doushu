@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import BirthForm, { type BirthFormState } from '@/components/BirthForm';
 import AiContent from '@/components/AiContent';
 import AiQuotaNotice from '@/components/AiQuotaNotice';
+import StyleSwitch from '@/components/StyleSwitch';
 import { parseAiQuotaExceeded, type AiQuotaExceededInfo } from '@/lib/ai-quota-error';
 import { formToBirthInfo } from '@/lib/ziwei/share';
 import { generateChart as buildChart } from '@/lib/ziwei/algorithm';
@@ -159,6 +160,7 @@ export default function HemingPage() {
         <span style={{ fontSize: '12px', color: 'var(--ac)', letterSpacing: '0.2em' }}>合盘分析</span>
         <div style={{ flex: 1 }} />
         <span className="forecast-status">感情 · 合伙 · 亲子 · 朋友</span>
+        <StyleSwitch current="classic" />
         <button type="button" className="forecast-theme-toggle" onClick={toggle} aria-label={isDark ? '切换亮色主题' : '切换暗色主题'}>
           {isDark ? '暗色' : '亮色'}
         </button>

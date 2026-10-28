@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import BirthForm from '@/components/BirthForm';
 import ChartBoard from '@/components/ChartBoard';
 import InsightPanel from '@/components/InsightPanel';
+import StyleSwitch from '@/components/StyleSwitch';
 import { useTheme } from '@/components/ThemeProvider';
 import { generateChart } from '@/lib/ziwei/algorithm';
 import type { BirthInfo, ZiweiChart, Palace } from '@/lib/ziwei/types';
@@ -35,6 +36,7 @@ export default function ChartPage() {
           </button>
           <div style={{ flex: 1 }} />
           <span className="forecast-status">本地排盘 · 无需等待</span>
+          <StyleSwitch current="classic" />
           <button type="button" className="forecast-theme-toggle" onClick={toggle} aria-label={theme === 'dark' ? '切换亮色主题' : '切换暗色主题'}>
             {theme === 'dark' ? '暗色' : '亮色'}
           </button>
@@ -69,6 +71,7 @@ export default function ChartPage() {
         >
           ← 重新起盘
         </button>
+        <StyleSwitch current="classic" />
         <button type="button" className="forecast-theme-toggle" onClick={toggle} aria-label={theme === 'dark' ? '切换亮色主题' : '切换暗色主题'}>
           {theme === 'dark' ? '暗' : '亮'}
         </button>
